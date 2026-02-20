@@ -6,12 +6,15 @@ import java.util.Base64;
 
 public abstract class Account {
 
-	private String username; // NEED TO HASH AND SALT
-	private String password; // NEED TO HASH AND SALT
+	private String username; // NEED TO HASH AND SALT? -> Say not Needed
+	private String password;
+	private String salt;
 
 	public Account(String username, String password) {
+
+		this.salt = AccountSalting.generateSalt();
 		this.username = username;
-		this.password = password;
+		this.password = AccountSalting.hashPassword(password, this.salt);
 	}
 
 	public String getUsername() {
@@ -35,13 +38,15 @@ public abstract class Account {
 		// CALL DB AND UPDATE PASSWORD
 	}
 
-	// NEED TO CREATE HASHING AND SALTING STATIC METHODS TO SET AND GET INFO
-	static class AccountSalting {
+	public String getSalt() {
+		return this.salt;
+	}
+
+	private static class AccountSalting {
 
 		/**
 		 * Generates a random salt using {@link SecureRandom} and encodes it in Base64.
 		 *
-		 * @return the generated salt string
 		 */
 		public static String generateSalt() {
 			SecureRandom random = new SecureRandom();
@@ -53,10 +58,6 @@ public abstract class Account {
 		/**
 		 * Hashes the given password with the specified salt using SHA-256 and encodes
 		 * the result in Base64.
-		 *
-		 * @param password the plain-text password
-		 * @param salt     the salt to use
-		 * @return the hashed password string
 		 */
 		public static String hashPassword(String password, String salt) {
 			try {
