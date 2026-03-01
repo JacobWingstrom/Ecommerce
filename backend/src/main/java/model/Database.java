@@ -66,6 +66,43 @@ public class Database {
             e.printStackTrace();
         }
     }
+    /**
+    Required methods:
+
+    Setters return a boolean
+
+    Getters return a ResultSet
+
+    Create a class JSONMake class that will consist of static methods to return JSON to the frontend
+
+    Create a class JSONTranslate that will translate JSON into processed information to interact with the database
+
+    getUsername - get the queried user's username
+    setUsername - set the queried user's username
+    getPassword - get the queried user's password
+    setPassword - set the queried user's password
+    getUserItemsBought - get the queried user's items bought
+    getUserItemsSold  - get the queried user's items sold
+    getStoreItems - get the list of items currently in the store
+    getUserItemsOnMarket - get the queried's users items they currently have on the market
+    getUserAvailability - get the queried user's availability
+    setUserAvailability - set the queried user's availability
+    setItemInDatabase - set the details of an item in the database
+    getBidOnItem - get a bid on an item
+    addUserItemSold - add to the queried user's list of items sold
+    addUserItemBought - add to the queried user's list of items bought
+    setBidOnItem - set a bid on an item
+    addUserReport - add a report from a user to the database
+    getUserReports - get the list of current reports from the database
+    getActiveUsers - get teh list of active users
+    getNewlyListedItems - get the list of items that are newly list
+    banUser - ban a user from the platform
+    suspendUser - suspend a user from the platform
+    isUserBanned - get whether a user is banned
+    isUserSuspended - represented as a String, gets the date the user suspension ends
+    
+    
+    */
 }
 
 
