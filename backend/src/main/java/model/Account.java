@@ -16,6 +16,14 @@ public abstract class Account {
 		this.username = username;
 		this.password = AccountSalting.hashPassword(password, this.salt);
 	}
+	/**
+	This constructor is used specifically when loading an account from the database
+	*/
+	public Account(String username, String passwordHash, String salt) {
+    	this.username = username;
+    	this.passwordHash = passwordHash;
+    	this.salt = salt;
+	}
 
 	public String getUsername() {
 		return username;
