@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS users (
     area VARCHAR(50)
 );
 
+ALTER TABLE users ADD COLUMN salt VARCHAR(255) NOT NULL;
+
 -- =====================================================
 -- Items Table
 -- Auction items
