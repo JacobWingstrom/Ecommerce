@@ -67,3 +67,50 @@ CREATE TABLE IF NOT EXISTS availability (
 
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+-- =====================================================
+-- Fake account insertions
+-- Inserts fake accounts into the database for testing
+-- Fake Account Plaintext Passwords (in order)
+
+-- 1.  Password: DesertStorm1!
+-- 2.  Password: SunDevil2025!
+-- 3.  Password: CactusBloom7!
+-- 4.  Password: TucsonRocks9!
+-- 5.  Password: PhoenixHeat4!
+-- 6.  Password: WildcatStrong8!
+-- 7.  Password: SaguaroSky3!
+-- 8.  Password: GrandCanyon6!
+-- 9.  Password: CopperState2!
+-- 10. Password: Roadrunner5!
+-- 11. Password: ValleySun11!
+-- 12. Password: MesaMountain12!
+-- 13. Password: RedRock13!
+-- 14. Password: DustDevil14!
+-- 15. Password: HeatWave15!
+-- 16. Password: CanyonTrail16!
+-- 17. Password: SunsetBlaze17!
+-- 18. Password: HorizonGlow18!
+-- 19. Password: SolarFlare19!
+-- 20. Password: DesertNight20!
+-- =====================================================
+INSERT INTO users (user_id, username, password_hashed, salt, role, area) VALUES
+(1,  'alice01',    'WO+4ibxbvsoFCf9FiDWEf1f2hh6TKgoR04asRI9I3kQ=', '5Cm/cySyxOotmaKQjxAxJQ==', 'USER', 'Phoenix'),
+(2,  'bob02',      'mew4D5h8RYn/lBTpRu2bPMp5eFFcCrSbJszrITqWvH8=', 'I3RvIJOg62YgCtmwEX3sag==', 'USER', 'Tucson'),
+(3,  'charlie03',  'u8MD8PJel1Tb99DzdcSHXQgKLyyAYlMUzrpc2zAPHZ0=', '7WtDCiCafuup+IUXQoNflA==', 'USER', 'Mesa'),
+(4,  'dana04',     '8lV5xR1Gk0ZqscgASImqdE2SmsA2BZY1+gMmdtssFiM=', 'sWOZjVl0HejBxC3A0ORfAA==', 'USER', 'Tempe'),
+(5,  'ethan05',    'zeVO6H7rjEpOfyvLlecd8aTE7TpFb58zlqCLw4vjfL8=', 'VC30mgRpGa9TmtMSi/krFg==', 'USER', 'Scottsdale'),
+(6,  'fiona06',    'uFtKM2/GpGRsinBaEajwy9l6CQiBd+TLLRvXHSH5Vl8=', '58wRvAVw0UGra4dYq6aYcQ==', 'USER', 'Yuma'),
+(7,  'george07',   'BICQiWa4DM5Bn6Dk2V7vBBX+2p4n82mRqgHD1euAZIw=', 'fSMX4ND/KanBSF5DjasIlg==', 'USER', 'Chandler'),
+(8,  'hannah08',   '9gacnlegGuJmk0fBzTFOHIlV2KyaFrb6zDPWpH139iM=', 'D1W2iXlz6H4ZJHh6n9pYvQ==', 'USER', 'Glendale'),
+(9,  'isaac09',    'k3zDBj9RR7gthnsIu8kUtgv4g+GndTWM2+41Xc3MaN0=', '5+l814dBXVX93+eFy0xOQg==', 'USER', 'Gilbert'),
+(10, 'julia10',    'EUoLnnZaShXbqi3Uzxa8R+42uGnyHfJoFKuG6Ox2AaQ=', 'IBOFQQz2zC3f5greqiXfUA==', 'USER', 'Flagstaff'),
+(11, 'kevin11',    'q3nwBhayS2yI8Mk419kjubvebU7RjpmOh+xjKweHVyU=', 'x0pRB9dB/Pa7wUO/jvUYrA==', 'ADMIN', 'Phoenix'),
+(12, 'laura12',    ' 6zFPyBQx8E9svxcs8fiygm94sobRaVvFAkOuhCUNb0M=', 'uAYn9vlA6rPkn2wieoOr+Q==', 'USER', 'Tucson'),
+(13, 'mike13',     'O8ZrMlKkuod9EVDobDDQb0dAia8qGqGzGvi/Z6XxKcg=', '+yaYKCVOLO3wZNzpZb74dQ==', 'USER', 'Mesa'),
+(14, 'nina14',     'ifiVgPB8oiX023Ld36wn3BxEZ6TG412WlsT2ik0Apao=', 'LfJHh2ch0/s6oiEB2qdmcw==', 'USER', 'Tempe'),
+(15, 'oscar15',    'OvMcn/sUeF1U00RDoRnIyXK005GbY8M5RgGRJjdQHsA=', 'N25e3Dn8QRv9Hv1lRosH6Q==', 'USER', 'Sedona'),
+(16, 'paula16',    'WFrnNOU+g/2JSv/eNi92+A/XxhTAq8JulmE7iwBR77g=', 'Im9KoawSNzvqhy15uEyz4w==', 'USER', 'Prescott'),
+(17, 'quinn17',    'ea0XW4eZrqSC/agyKQgEwAPvwmcRzu/krt8pyRyV3RM=', 'U1D0gHEezEnk22NpxfThEg==', 'USER', 'Surprise'),
+(18, 'rachel18',   '1bnUl/JgmOY10qAAxq4jWoX5ZVMx6DyG1U/nEyL/kQQ=', 'e9JthJubvYTasQiKFC2dUQ==', 'USER', 'Casa Grande'),
+(19, 'sam19',      'XnmqRl6WxxX2DFGtDrr32zcw+aFjJoY3781ajwRH1Mc=', 'K0vHY0sc/kOZDbJsB32VTg==', 'USER', 'Kingman'),
+(20, 'tina20',     'GnIqsB+kYTntNMMlrEtXz43MPagswKTxY8YWxxiJOIU=', 'qLdSUWMPefk3fjld8qlJpg==', 'USER', 'Lake Havasu');
