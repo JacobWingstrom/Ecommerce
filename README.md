@@ -39,6 +39,12 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
+## Docker
+
+This project runs on a Docker container. As such, to maintain consistency for product testing, the Docker image runs an initialization file to initialize the MySQL database. This way, the project has consistent data across machines and across testing. To ensure that the data is appropriately created, the following must be run in the terminal:
+docker-compose down -v
+docker-compose up --build
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
