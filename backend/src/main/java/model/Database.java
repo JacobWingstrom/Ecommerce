@@ -5,7 +5,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
-
+import java.util.List;
+import java.util.ArrayList;
 
 public class Database {
     private static final int POOL_SIZE = 5;
@@ -103,6 +104,31 @@ public class Database {
     
     
     */
+    public static Account getUserByUsername(String username);
+    public static void updateUsername(Account account, String newUsername);
+    public static void updatePassword(Account account, String hashedPassword);
+    public List<Item> getUserItemsBought(Account account);
+    public List<Item> getUserItemsSOld(Account account);
+    public static void addUserItemBought(Account account, Item item);
+    public static void addUserItemSold(Account account, Item item);
+    public static List<Listing> getStoreItems();
+    public static List<Listing> getUserItemsOnMarket(Account account);
+    public static List<Listing> getNewlyListedItems();
+    public static void addItem(Item item);
+    public static void updateItem(Item item);
+    public static Bid getBidOnItem(Item item);
+    public static void setBidOnItem(Item item, Bid bid);
+    public Availability getUserAvailability(Account account);
+    public void setUserAvailability(Account account, Availability availability);
+    public void addUserReport(Report report);
+    public List<Report> getUserReports();
+    public List<Account> getActiveUsers();
+    public void banUser(String username);
+    public void suspendUser(Account account, LocalDate suspensionEndDate);
+    public boolean isUserBanned(Account account);
+    public LocalDate getUserSuspensionEnd(Account account);
+    
+    
 }
 
 
