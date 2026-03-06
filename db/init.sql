@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password_hashed VARCHAR(255) NOT NULL,
     salt VARCHAR(255) NOT NULL
-    role VARCHAR(20) NOT NULL,
     area VARCHAR(50)
 );
 

@@ -164,21 +164,19 @@ public abstract class Database {
         }
     }
 
-    public static void addUserToDatabase(Account account, Role role){
+    public static void addUserToDatabase(Account account){
         String username = account.getUsername();
         String password = account.getPassword();
         String salt = account.getSalt();
         String area = account.getArea();
-        String roleString = role.name();
         try(Connection con = getConnection()){ 
-            String query = "INSERT INTO users (username, password_hashed, salt, role, area) " + 
-                            "VALUES (?, ?, ?, ?, ?);";
+            String query = "INSERT INTO users (username, password_hashed, salt, area) " + 
+                            "VALUES (?, ?, ?, ?);";
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, password);
             stmt.setString(3, salt);
-            stmt.setString(4, roleString);
-            stmt.setString(5, area);
+            stmt.setString(4, area);
             stmt.executeUpdate();
             releaseConnection(con);
         }catch (SQLException e){
