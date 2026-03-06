@@ -1,12 +1,17 @@
 package model;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.ArrayList; 
 
 public class Database {
     private static final int POOL_SIZE = 5;
@@ -104,7 +109,26 @@ public class Database {
     
     
     */
-    public static Account getUserByUsername(String username);
+    public static Account getUserByUsername(String username) throws SQLException{        
+        try(Connection con = getConnection()){
+            String query = "SELECT username, password_hashed, salt FROM users WHERE username = ?";
+            PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()){
+                if(rs.next()){
+                    return new Buyer( 
+                        rs.getString("username"),
+                        rs.getString("password_hashed"),
+                        rs.getString("salt")
+                    );
+                }   
+            }
+            
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static void updateUsername(Account account, String newUsername);
     public static void updatePassword(Account account, String hashedPassword);
     public List<Item> getUserItemsBought(Account account);
