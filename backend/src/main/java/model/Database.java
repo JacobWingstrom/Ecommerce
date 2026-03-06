@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.ArrayList; 
 
-public class Database {
+public abstract class Database {
     private static final int POOL_SIZE = 5;
     private static Queue<Connection> availableConnections = new LinkedList();
     private static Set<Connection> usedConnections = new HashSet<>();
@@ -111,15 +111,17 @@ public class Database {
     */
     public static Account getUserByUsername(String username) throws SQLException{        
         try(Connection con = getConnection()){
-            String query = "SELECT username, password_hashed, salt FROM users WHERE username = ?";
+            String query = "SELECT username, password_hashed, salt, area FROM users WHERE username = ?";
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
+                    releaseConnection(con);
                     return new Buyer( 
                         rs.getString("username"),
                         rs.getString("password_hashed"),
-                        rs.getString("salt")
+                        rs.getString("salt"),
+                        rs.getString("area")
                     );
                 }   
             }
@@ -129,8 +131,60 @@ public class Database {
         }
         return null;
     }
-    public static void updateUsername(Account account, String newUsername);
-    public static void updatePassword(Account account, String hashedPassword);
+    public static void updateUsername(Account account, String newUsername){
+        try(Connection con = getConnection()){
+
+            String query = "UPDATE users SET username = ? WHERE username = ?";
+            PreparedStatement stmt = con.prepareStatement(query);
+
+            stmt.setString(1, newUsername);
+            stmt.setString(2, account.getUsername());
+
+            stmt.executeUpdate();
+            account.setUsername(newUsername);
+            releaseConnection(con);
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void updatePassword(Account account, String hashedPassword){
+        try(Connection con = getConnection()){
+            String query = "UPDATE users SET password_hashed = ? WHERE username = ?";
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, hashedPassword);
+            stmt.setString(2, account.getPassword());
+            stmt.executeUpdate();
+            account.setPassword(hashedPassword);
+            releaseConnection(con);
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void addUserToDatabase(Account account, Role role){
+        String username = account.getUsername();
+        String password = account.getPassword();
+        String salt = account.getSalt();
+        String area = account.getArea();
+        String roleString = role.name();
+        try(Connection con = getConnection()){ 
+            String query = "INSERT INTO users (username, password_hashed, salt, role, area) " + 
+                            "VALUES (?, ?, ?, ?, ?);";
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.setString(3, salt);
+            stmt.setString(4, roleString);
+            stmt.setString(5, area);
+            stmt.executeUpdate();
+            releaseConnection(con);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
     public List<Item> getUserItemsBought(Account account);
     public List<Item> getUserItemsSOld(Account account);
     public static void addUserItemBought(Account account, Item item);

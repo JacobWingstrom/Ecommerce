@@ -9,11 +9,11 @@ public class Seller extends Account {
 	private Listing soldList; // All Items that have been sold
 	private Listing sellingList; // All Currently Selling Items
 
-	public Seller(String username, String password) {
-		super(username, password);
+	public Seller(String username, String password, String area) {
+		super(username, password, area);
 	}
-	public Seller(String username, String password, String salt){
-		super(username, password, salt);
+	public Seller(String username, String password, String salt, String area){
+		super(username, password, salt, area);
 	}
 
 	public Map<LocalDate, AvailabiltyBlock> getAvailabilty() {

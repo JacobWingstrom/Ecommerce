@@ -5,18 +5,18 @@ public class Buyer extends Account {
 	private Listing boughtList; // All Items that have been Bough
 	private Listing bidList; // All Items that User is currently bidding on
 	
-	public Buyer(String username, String password) {
-		super(username, password);
+	public Buyer(String username, String password, String area) {
+		super(username, password, area);
 		this.boughtList = new Listing();
 		this.bidList = new Listing();
 	}
-	public Buyer(String username, String password, String salt){
-		super(username, password, salt);
+	public Buyer(String username, String password, String salt, String area){
+		super(username, password, salt, area);
 	}
 	
 	// Deep Copy Constructor
 	public Buyer(Buyer buyer) {
-		super(buyer.getUsername(), buyer.getPassword());
+		super(buyer.getUsername(), buyer.getPassword(), buyer.getArea());
 		this.boughtList = buyer.getBoughtList();
 		this.bidList = buyer.getBidList();
 	}

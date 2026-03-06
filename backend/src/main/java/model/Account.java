@@ -9,20 +9,23 @@ public abstract class Account {
 	private String username; // NEED TO HASH AND SALT? -> Say not Needed
 	private String password;
 	private String salt;
+	private String area;
 
-	public Account(String username, String password) {
+	public Account(String username, String password, String area) {
 
 		this.salt = AccountSalting.generateSalt();
 		this.username = username;
 		this.password = AccountSalting.hashPassword(password, this.salt);
+		this.area = area;
 	}
 	/**
 	This constructor is used specifically when loading an account from the database
 	*/
-	public Account(String username, String passwordHash, String salt) {
+	public Account(String username, String passwordHash, String salt, String area) {
     	this.username = username;
-    	this.passwordHash = passwordHash;
+    	this.password = passwordHash;
     	this.salt = salt;
+		this.area = area;
 	}
 
 	public String getUsername() {
@@ -44,6 +47,14 @@ public abstract class Account {
 	public void setPassword(String password) {
 		this.password = password;
 		// CALL DB AND UPDATE PASSWORD
+	}
+
+	public String getArea(){
+		return area;
+	}
+
+	public void setArea(String newArea){
+		area = newArea;
 	}
 
 	public String getSalt() {
