@@ -7,7 +7,6 @@ public class Item {
 	private String tag;
 	private Double highestBid;
 	private Buyer highestBuyer;
-
 	public Item(String username, String description, String tag) {
 
 		this.username = username;

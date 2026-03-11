@@ -10,6 +10,7 @@ public abstract class Account {
 	private String password;
 	private String salt;
 	private String area;
+	private int userId;
 
 	public Account(String username, String password, String area) {
 
@@ -17,15 +18,17 @@ public abstract class Account {
 		this.username = username;
 		this.password = AccountSalting.hashPassword(password, this.salt);
 		this.area = area;
+		userId = -1;
 	}
 	/**
 	This constructor is used specifically when loading an account from the database
 	*/
-	public Account(String username, String passwordHash, String salt, String area) {
+	public Account(String username, String passwordHash, String salt, String area, int userId) {
     	this.username = username;
     	this.password = passwordHash;
     	this.salt = salt;
 		this.area = area;
+		this.userId = userId;
 	}
 
 	public String getUsername() {
@@ -59,6 +62,14 @@ public abstract class Account {
 
 	public String getSalt() {
 		return this.salt;
+	}
+
+	public int getUserID(){
+		return this.userId;
+	}
+
+	public void setUserId(int newId){
+		this.userId = newId;
 	}
 
 	private static class AccountSalting {

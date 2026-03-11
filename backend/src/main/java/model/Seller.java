@@ -12,8 +12,8 @@ public class Seller extends Account {
 	public Seller(String username, String password, String area) {
 		super(username, password, area);
 	}
-	public Seller(String username, String password, String salt, String area){
-		super(username, password, salt, area);
+	public Seller(String username, String password, String salt, String area, int userId){
+		super(username, password, salt, area, userId);
 	}
 
 	public Map<LocalDate, AvailabiltyBlock> getAvailabilty() {

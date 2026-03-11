@@ -121,7 +121,8 @@ public abstract class Database {
                         rs.getString("username"),
                         rs.getString("password_hashed"),
                         rs.getString("salt"),
-                        rs.getString("area")
+                        rs.getString("area"),
+                        rs.getInt("user_id")
                     );
                 }   
             }
@@ -178,13 +179,64 @@ public abstract class Database {
             stmt.setString(3, salt);
             stmt.setString(4, area);
             stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if(rs.next()){
+                int id = rs.getInt(1);
+                account.setUserId(id);
+            }
             releaseConnection(con);
         }catch (SQLException e){
             e.printStackTrace();
         }
     }
-    public List<Item> getUserItemsBought(Account account);
-    public List<Item> getUserItemsSOld(Account account);
+    public List<Item> getUserItemsBought(int userId){
+        List<Item> items = new ArrayList<>();
+        try(Connection con = getConnection()){
+            String query = "SELECT * FROM items WHERE highest_bidder_id = ? AND sold = TRUE";
+            PreparedStatement stmt = con.prepareStatement(query);
+            String userIdString = Integer.toString(userId);
+            stmt.setString(1, userIdString);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                Item item = new Item(
+                    rs.getString("name"), 
+                    rs.getString("description"),
+                    rs.getString("tag")
+                );
+                items.add(item);
+            }
+            releaseConnection(con);
+            return items;
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public List<Item> getUserItemsSOld(int userId){
+        List<Item> items = new ArrayList<>();
+        try(Connection con = getConnection()){
+            String query = "SELECT * FROM items WHERE seller_id = ? AND sold = TRUE";
+            PreparedStatement stmt = con.prepareStatement(query);
+            String userIdString = Integer.toString(userId);
+            stmt.setString(1, userIdString);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                Item item = new Item(
+                    rs.getString("name"), 
+                    rs.getString("description"),
+                    rs.getString("tag")
+                );
+                items.add(item);
+            }
+            releaseConnection(con);
+            return items;
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static void addUserItemBought(Account account, Item item);
     public static void addUserItemSold(Account account, Item item);
     public static List<Listing> getStoreItems();

@@ -10,8 +10,8 @@ public class Buyer extends Account {
 		this.boughtList = new Listing();
 		this.bidList = new Listing();
 	}
-	public Buyer(String username, String password, String salt, String area){
-		super(username, password, salt, area);
+	public Buyer(String username, String password, String salt, String area, int userId){
+		super(username, password, salt, area, userId);
 	}
 	
 	// Deep Copy Constructor

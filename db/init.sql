@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS items (
     end_time DATETIME,
     approved_flag TINYINT DEFAULT 0,
     tag VARCHAR(50),
-
+    sold BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (seller_id) REFERENCES users(user_id),
     FOREIGN KEY (highest_bidder_id) REFERENCES users(user_id)
 );
