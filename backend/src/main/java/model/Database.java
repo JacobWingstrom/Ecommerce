@@ -1,4 +1,5 @@
 package model;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -6,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -198,11 +200,7 @@ public abstract class Database {
             stmt.setString(1, userIdString);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
-                Item item = new Item(
-                    rs.getString("name"), 
-                    rs.getString("description"),
-                    rs.getString("tag")
-                );
+                Item item = buildItem(rs);
                 items.add(item);
             }
             releaseConnection(con);
@@ -213,7 +211,23 @@ public abstract class Database {
         }
         return null;
     }
-    public List<Item> getUserItemsSOld(int userId){
+    private static Item buildItem(ResultSet rs) throws SQLException {
+
+        int itemId = rs.getInt("item_id");
+        String name = rs.getString("name");
+        String description = rs.getString("description");
+        BigDecimal currPrice = rs.getBigDecimal("curr_price");
+        int sellerId = rs.getInt("seller_id");
+        int highestBidderId = rs.getInt("highest_bidder_id");
+
+        LocalDateTime endTime =
+            rs.getTimestamp("end_time").toLocalDateTime();
+
+        String tag = rs.getString("tag");
+
+        return new Item(name, description, tag, endTime);
+    }
+    public List<Item> getUserItemsSold(int userId){
         List<Item> items = new ArrayList<>();
         try(Connection con = getConnection()){
             String query = "SELECT * FROM items WHERE seller_id = ? AND sold = TRUE";
@@ -222,11 +236,7 @@ public abstract class Database {
             stmt.setString(1, userIdString);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
-                Item item = new Item(
-                    rs.getString("name"), 
-                    rs.getString("description"),
-                    rs.getString("tag")
-                );
+                Item item = buildItem(rs);
                 items.add(item);
             }
             releaseConnection(con);
@@ -237,8 +247,31 @@ public abstract class Database {
         }
         return null;
     }
-    public static void addUserItemBought(Account account, Item item);
-    public static void addUserItemSold(Account account, Item item);
+    public static void addUserItemBought(int buyerId, int sellerId, Item item){
+        try(Connection con = getConnection()){
+            String query = "INSERT INTO items (seller_id, name, description, curr_price, highest_bidder_id, end_time, approved_flag, sold) "
+            + "VALUES (?, ? ?, ?, NULL, ?, 0, ?, FALSE)";
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setInt(1, sellerId);
+            stmt.setString(2, item.getUsername());
+            stmt.setString(3, item.getDescription());
+            stmt.setBigDecimal(4, item.getHighestBid());
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public static void markItemSold(int itemId, int buyerId){
+        try(Connection con = getConnection()){
+            String query = "UPDATE items SET sold = TRUE, highest_bidder_id = ?, WHERE item_id = ?";
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setInt(1, buyerId);
+            stmt.setInt(2, itemId);
+            stmt.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
     public static List<Listing> getStoreItems();
     public static List<Listing> getUserItemsOnMarket(Account account);
     public static List<Listing> getNewlyListedItems();

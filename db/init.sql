@@ -26,11 +26,11 @@ CREATE TABLE IF NOT EXISTS users (
 -- highest_bidder_id may be NULL
 -- =====================================================
 CREATE TABLE IF NOT EXISTS items (
-    item_id INT PRIMARY KEY,
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
     seller_id INT NOT NULL,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    curr_price DECIMAL(10,2) DEFAULT 0,
+    curr_price BIGDECIMAL(10,2) DEFAULT 0,
     highest_bidder_id INT,
     end_time DATETIME,
     approved_flag TINYINT DEFAULT 0,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS items (
 -- Bids Table
 -- =====================================================
 CREATE TABLE IF NOT EXISTS bids (
-    bid_id INT PRIMARY KEY,
+    bid_id INT AUTO_INCREMENT PRIMARY KEY,
     bidder_id INT NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     timestamp DATETIME,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS bids (
 -- Tracks seller availability blocks
 -- =====================================================
 CREATE TABLE IF NOT EXISTS availability (
-    avail_id INT PRIMARY KEY,
+    avail_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     start_time TIME,
     end_time TIME,

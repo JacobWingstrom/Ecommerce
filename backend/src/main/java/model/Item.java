@@ -1,20 +1,35 @@
 package model;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 public class Item {
 
 	private String username;
 	private String description;
 	private String tag;
-	private Double highestBid;
+	private BigDecimal highestBid;
 	private Buyer highestBuyer;
-	public Item(String username, String description, String tag) {
-
+	private int itemId;
+	private LocalDateTime end_time;
+	public Item(String username, String description, String tag, LocalDateTime end_time) {
+		this.itemId = -1;
 		this.username = username;
 		this.description = description;
 		this.tag = tag;
-		this.highestBid = 0.0;
+		this.highestBid = new BigDecimal(0.0);
 		this.highestBuyer = null;
+		this.end_time = end_time;
 
+	}
+	public Item(String username, String description, String tag, int itemId, BigDecimal highestBid, LocalDateTime end_time){
+		this.itemId = itemId;
+		this.username = username;
+		this.description = description;
+		this.tag = tag;
+		this.highestBid = highestBid;
+		this.highestBuyer = null;
+		this.end_time = end_time;
 	}
 
 	public Item(Item item) {
@@ -53,17 +68,21 @@ public class Item {
 		this.tag = tag;
 	}
 
-	public Double getHighestBid() {
+	public BigDecimal getHighestBid() {
 		return highestBid;
 	}
 
 	// NEED TO UPDATE IN DB
-	public void setHighestBid(Double highestBid) {
+	public void setHighestBid(BigDecimal highestBid) {
 		this.highestBid = highestBid;
 	}
 
 	public Buyer getHighestBuyer() {
 		return highestBuyer;
+	}
+
+	public int getItemId(){
+		return this.itemId;
 	}
 
 	// NEED TO UPDATE IN DB
