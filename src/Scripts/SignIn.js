@@ -13,7 +13,7 @@ async function signInUser(credentials) {
     body: JSON.stringify(credentials)
   });
 
-  if (!response.ok) throw new Error("Invalid Credentials");
+  //if (!response.ok) throw new Error("Invalid Credentials");
   return response.json();
 }
 
@@ -22,7 +22,7 @@ function SignInForm() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('')
     const { login } = useAuth();
-    const { navigate } = useNavigate();
+    const navigate = useNavigate();
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -33,10 +33,10 @@ function SignInForm() {
                 password
             });
             login(user);
-            navigate('/MainPage.js');
+            navigate('/MainPage');
         } catch {
             setError('Invalid Login Credentials');
-            navigate('/MainPage.js');
+            navigate('/MainPage');
         }
     }
 
