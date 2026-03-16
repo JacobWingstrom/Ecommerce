@@ -1,33 +1,48 @@
 import '../Sheets/SignIn.css'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../Context/AuthContext.js'
 
 async function signInUser(credentials) {
-  return fetch('http://localhost:8080/login', {
+  const response = await fetch('http://localhost:8080/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
+    credentials: 'include',
     body: JSON.stringify(credentials)
-  })
-    .then(data => data.json());
+  });
+
+  //if (!response.ok) throw new Error("Invalid Credentials");
+  return response.json();
 }
 
 function SignInForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    
+    const [error, setError] = useState('')
+    const { login } = useAuth();
+    const navigate = useNavigate();
+
     const handleSubmit = async e => {
         e.preventDefault();
-        const token = await signInUser({
-            username,
-            password
-        });
-
-        //Do Something with token
+        setError('');
+        try {
+            const user = await signInUser({
+                username,
+                password
+            });
+            login(user);
+            navigate('/MainPage');
+        } catch {
+            setError('Invalid Login Credentials');
+            navigate('/MainPage');
+        }
     }
 
     return(
         <form onSubmit={handleSubmit}>
+            {error && <p id="SignIn-error">{error}</p>}
             <label>
                 <p>Email: </p>
                 <input type="email" name="email" onChange={e => setUsername(e.target.value)} />
