@@ -46,9 +46,13 @@ public abstract class Account {
 		return password;
 	}
 
+	public static String saltPassword(String password, String salt){
+		return AccountSalting.hashPassword(password, salt);
+	}
 	// NEED TO VALIDATE USER THROUGH FRONT
 	public void setPassword(String password) {
-		this.password = password;
+
+		this.password = AccountSalting.hashPassword(password, this.salt);
 		// CALL DB AND UPDATE PASSWORD
 	}
 

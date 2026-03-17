@@ -6,14 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import java.util.List;
-import java.util.ArrayList; 
 
 public abstract class Database {
     private static final int POOL_SIZE = 5;
@@ -113,7 +112,7 @@ public abstract class Database {
     */
     public static Account getUserByUsername(String username) throws SQLException{        
         try(Connection con = getConnection()){
-            String query = "SELECT username, password_hashed, salt, area FROM users WHERE username = ?";
+            String query = "SELECT user_id, username, password_hashed, salt, area FROM users WHERE username = ?";
             PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()){
@@ -134,6 +133,23 @@ public abstract class Database {
         }
         return null;
     }
+
+    public static Account authenticate(String username, String password) throws SQLException {
+        Account user = getUserByUsername(username);
+
+        if (user == null) {
+            return null;
+        }
+        String salt  = user.getSalt();
+        String hashedPassword = Account.saltPassword(password, salt);
+
+        if (hashedPassword.equals(user.getPassword())) {
+            return user;
+        }
+
+        return null;
+    }
+
     public static void updateUsername(Account account, String newUsername){
         try(Connection con = getConnection()){
 
@@ -272,6 +288,7 @@ public abstract class Database {
             e.printStackTrace();
         }
     }
+    /*
     public static List<Listing> getStoreItems();
     public static List<Listing> getUserItemsOnMarket(Account account);
     public static List<Listing> getNewlyListedItems();
@@ -288,6 +305,7 @@ public abstract class Database {
     public void suspendUser(Account account, LocalDate suspensionEndDate);
     public boolean isUserBanned(Account account);
     public LocalDate getUserSuspensionEnd(Account account);
+    */
     
     
 }
