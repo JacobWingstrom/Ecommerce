@@ -1,0 +1,20 @@
+#MainPage{
+    display:inline-flex;
+    width: 100vw;
+    height: calc(100vh - 50px);
+}
+
+.MainBody-Body{
+    width: 50%;
+    height: calc(100vh - 50px);
+    border-radius: 0px;
+    border: 3px rgb(226, 249, 199) solid;
+    cursor: pointer;
+    background-color: rgb(249, 235, 162);
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.MainBody-Body:hover{
+    background-color:  rgb(225, 212, 146);
+}
