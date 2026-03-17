@@ -13,7 +13,7 @@ async function signInUser(credentials) {
     body: JSON.stringify(credentials)
   });
 
-  //if (!response.ok) throw new Error("Invalid Credentials");
+  if (!response.ok) throw new Error("Invalid Credentials");
   return response.json();
 }
 
@@ -28,11 +28,11 @@ function SignInForm() {
         e.preventDefault();
         setError('');
         try {
-            const user = await signInUser({
+            const data = await signInUser({
                 username,
                 password
             });
-            login(user);
+            login(data.user, data.token);
             navigate('/MainPage');
         } catch {
             setError('Invalid Login Credentials');
