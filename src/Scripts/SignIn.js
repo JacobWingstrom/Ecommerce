@@ -59,8 +59,24 @@ function SignInForm() {
         </form>
     );
 }
+
+function SignIpContainer() {
+    return (
+        <div className="left-container">
+            <img src={pineappleLogo} alt="Pineapple logo" className='image'></img>
+        </div>
+        <div className="right-container">
+          <h2>Login In</h2>
+          <SignUpForm />
+        </div>
+    );
+}
 export default function SignIn() {
     return(
-        <SignInForm />
+        <div>
+          <div>
+          </div>
+          <SignInForm />
+        </div>
     );
 }
