@@ -1,0 +1,46 @@
+.sign-up-div {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(249, 235, 162);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background-color: rgb(226, 249, 199);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 30px;
+    max-width: 400px;
+    width: 100%;
+}
+
+
+.form {
+    font-weight: bold;
+}
+
+h2 {
+    text-align: center;
+    margin: 0 auto;
+    font-size: x-large;
+    max-width: 250px; 
+}
+
+.button {
+    background-color: rgb(255, 213, 0);
+    font-weight: bold;
+    font-size: large;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.image {
+    width: 25%;
+    height: auto;
+}
