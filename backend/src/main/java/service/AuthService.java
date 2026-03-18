@@ -10,10 +10,10 @@ import model.Item;
 
 public class AuthService {
 
-	public static boolean AddUser(String username, String password, String area) throws SQLException {
+	public static boolean AddUser(String username, String password) throws SQLException {
 
 		if (Database.authenticate(username, password) == null) {
-			Database.addUserToDatabase(new Buyer(username, password, area));
+			Database.addUserToDatabase(new Account(username, password));
 			return true;
 		}
 		return false;

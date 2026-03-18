@@ -25,7 +25,7 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public SignupResponse signup(@RequestBody AccountRequest request) throws SQLException {
-		boolean success = AuthService.AddUser(request.getUsername(), request.getPassword(), request.getArea());
+		boolean success = AuthService.AddUser(request.getUsername(), request.getPassword());
 		return new SignupResponse(success);
 	}
 
