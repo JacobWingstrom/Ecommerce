@@ -3,17 +3,15 @@ package model;
 import java.util.ArrayList;
 
 public class Listing {
-	
+
 	private ArrayList<Item> itemListings;
-	
+
 	public Listing() {
-		
+
 		this.itemListings = new ArrayList<Item>();
-		
+
 	}
-	
-	
-	
+
 	public ArrayList<Item> getItemListings() {
 		return new ArrayList<>(itemListings);
 	}
@@ -26,19 +24,24 @@ public class Listing {
 			this.itemListings.add(new Item(item));
 		}
 	}
-	
+
 	// NEED TO ADD PARAMS
-	public boolean addItem() {
-		return false;
-		
+	public boolean addItem(Item item) {
+		this.itemListings.add(new Item(item));
+		return true;
+
 	}
-	
+
 	// NEED TO ADD PARAMS
-	public boolean removeItem() {
+	public boolean removeItem(Item item) {
+		// FIX THIS -> WONT ACTUALLY REMOVE
+		if (this.itemListings.remove(item)) {
+			return true;
+		}
 		return false;
-		
+
 	}
-	
+
 	// NEED TO ADD PARAMS
 	public boolean editItem() {
 		return false;
