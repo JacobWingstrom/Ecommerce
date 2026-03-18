@@ -2,33 +2,49 @@ package model;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.Base64;
+import java.util.Map;
+import service.JWTTokenGenerator;
 
-public abstract class Account {
+public class Account {
 
 	private String username; // NEED TO HASH AND SALT? -> Say not Needed
 	private String password;
 	private String salt;
 	private String area;
 	private int userId;
+	private Availabilty availabilty;
+	private String token;
 
-	public Account(String username, String password, String area) {
+	public Account(String username, String password) {
 
 		this.salt = AccountSalting.generateSalt();
 		this.username = username;
 		this.password = AccountSalting.hashPassword(password, this.salt);
-		this.area = area;
+		this.area = "UnKnown";
 		userId = -1;
+		this.token = createToken();
 	}
+
 	/**
-	This constructor is used specifically when loading an account from the database
-	*/
+	 * This constructor is used specifically when loading an account from the
+	 * database
+	 */
 	public Account(String username, String passwordHash, String salt, String area, int userId) {
-    	this.username = username;
-    	this.password = passwordHash;
-    	this.salt = salt;
+		this.username = username;
+		this.password = passwordHash;
+		this.salt = salt;
 		this.area = area;
 		this.userId = userId;
+	}
+
+	private String createToken() {
+		return JWTTokenGenerator.generateToken(username);
+	}
+
+	public String getToken() {
+		return this.token;
 	}
 
 	public String getUsername() {
@@ -46,9 +62,10 @@ public abstract class Account {
 		return password;
 	}
 
-	public static String saltPassword(String password, String salt){
+	public static String saltPassword(String password, String salt) {
 		return AccountSalting.hashPassword(password, salt);
 	}
+
 	// NEED TO VALIDATE USER THROUGH FRONT
 	public void setPassword(String password) {
 
@@ -56,11 +73,11 @@ public abstract class Account {
 		// CALL DB AND UPDATE PASSWORD
 	}
 
-	public String getArea(){
+	public String getArea() {
 		return area;
 	}
 
-	public void setArea(String newArea){
+	public void setArea(String newArea) {
 		area = newArea;
 	}
 
@@ -68,12 +85,16 @@ public abstract class Account {
 		return this.salt;
 	}
 
-	public int getUserID(){
+	public int getUserID() {
 		return this.userId;
 	}
 
-	public void setUserId(int newId){
+	public void setUserId(int newId) {
 		this.userId = newId;
+	}
+
+	public Map<LocalDate, AvailabiltyBlock> getAvailabilty() {
+		return availabilty.getAvailableTimes();
 	}
 
 	private static class AccountSalting {
