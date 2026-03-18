@@ -19,6 +19,7 @@ public class AuthService {
 		return false;
 	}
 
+	// FIX THIS METHOD, DONT KNOW WHAT TO DO WITH THE LISTS (BUYER/SELLER)
 	public static Account signInUser(String username, String password) throws SQLException {
 
 		Account acct = Database.authenticate(username, password);
@@ -26,13 +27,15 @@ public class AuthService {
 			return null;
 		}
 
-		List<Item> buyerBoughtList = Database.getUserItemsBought(0);
-		List<Item> buyerBidList = Database.getUserItemsBought(0);
+//		List<Item> buyerBoughtList = Database.getUserItemsBought(0);
+//		List<Item> buyerBidList = Database.getUserItemsBought(0);
+//
+//		List<Item> sellerSoldList = Database.getUserItemsSold(0);
+//		List<Item> sellerSellingList = Database.getUserItemsSold(0);
 
-		List<Item> sellerSoldList = Database.getUserItemsSold(0);
-		List<Item> sellerSellingList = Database.getUserItemsSold(0);
-
-		return null;
+		return acct;
 	}
+
+	// MAKE METHOD FOR LOGOUT
 
 }
