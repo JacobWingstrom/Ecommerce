@@ -1,60 +1,96 @@
-import '../Sheets/SignUp.css'
+import '../Sheets/SignUp.css';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import pineappleLogo from '../Images/pineappleLogoPlaceholder.jpg';
+ 
+async function registerUser(credentials) {
+    const response = await fetch('http://localhost:8080/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(credentials)
+    });
 
-function checkFields(event) {
-    event.preventDefault();
-
-    const passwordInput = document.getElementById("password");
-    const confirmPasswordInput = document.getElementById("confirmPassword");
-
-    const password = passwordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
-
-    if (password !== confirmPassword) {
-        passwordInput.value = '';
-        confirmPasswordInput.value = '';
-        alert("Passwords do not match");
-        return;
-    }
-
-    alert("Account created successfully!");
+    if (!response.ok) throw new Error('Registration failed');
+    return response.json();
 }
 
 function SignUpForm() {
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+ 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
 
+        if (password !== confirmPassword) {
+            setPassword('');
+            setConfirmPassword('');
+            setError('Passwords do not match. Please try again.');
+            return;
+        }
+
+        try {
+            await registerUser({ email, username, password });
+            navigate('/');
+        } catch {
+            setError('Something went wrong. Please try again.');
+        }
+    };
+ 
     return (
-        <form className='form' onSubmit={checkFields}>  
-            <label>Email</label><br></br>
-            <input type='email' placeholder='Email'></input><br></br>
-            <br></br>
-            <label>Username</label><br></br>
-            <input type='text' placeholder='Username'></input><br></br>
-            <br></br>
-            <label>Password</label><br></br>
-            <input id='password' type='password' placeholder='password'></input><br></br>
-            <br></br>
-            <label>Confirm Password</label><br></br>
-            <input id='confirmPassword' type='password' placeholder='password'></input><br></br>
-            <br></br>
-            <button type='submit' className='button'>Sign Up</button>
+        <form className='form' onSubmit={handleSubmit}>
+            {error && <p className="error-msg">{error}</p>}
+ 
+            <label>
+                EMAIL
+                <input type='email' placeholder='JohnDoe@example.com' value={email} className="email"
+                onChange={e => setEmail(e.target.value)} required />
+            </label>
+ 
+            <label>
+                USERNAME
+                <input type='text' placeholder='JohnDoe' value={username} className="username"
+                onChange={e => setUsername(e.target.value)} required />
+            </label>
+ 
+            <label>
+                PASSWORD
+                <input type='password' placeholder='Password' value={password} className="password" 
+                onChange={e => setPassword(e.target.value)} required />
+            </label>
+ 
+            <label>
+                CONFIRM PASSWORD
+                <input type='password' placeholder='Password' value={confirmPassword} className="password"
+                onChange={e => setConfirmPassword(e.target.value)} required />
+            </label>
+ 
+            <button type='submit' className='button'>Create Account</button>
+ 
+            <p className='sign-in-link'>
+                Already have an account? <a href="/">Sign in</a>
+            </p>
         </form>
     );
 }
-
+ 
 function SignUpContainer() {
     return (
         <div className='container'>
-            <img src={pineappleLogo} alt="Pineapple logo" className='image'></img>
+            <img src={pineappleLogo} alt="Pineapple logo" className='image' />
             <h2>Get Started With Your Account</h2>
             <SignUpForm />
         </div>
     );
 }
-
-
-
+ 
 export default function SignUp() {
-    return(
+    return (
         <div className='sign-up-div'>
             <SignUpContainer />
         </div>
