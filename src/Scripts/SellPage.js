@@ -3,6 +3,7 @@ import Header from "./Header.js"
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from '../Context/AuthContext.js'
+
 function SellPageHeader() {
     const navigate = useNavigate();
 
@@ -59,11 +60,11 @@ function SellPageBody() {
                 {error && <p id="SellPage-error" style={{color: 'red'}}>{error}</p>}
                 <label>
                     <p>Item Name:</p>
-                    <input type="text" name="itemName" onChange={ e => setTitle(e.target.value) } placeholder="Title" />
+                    <input type="text" name="itemName" onChange={ e => setTitle(e.target.value) } />
                 </label>
                 <label>
                     <p>Description:</p>
-                    <textarea name="description" onChange={ e => setDescription(e.target.value) } placeholder="Description" rows={4}/>
+                    <textarea name="description" onChange={ e => setDescription(e.target.value) } rows={4}/>
                 </label>
                 <label>
                     <p>Starting Price:</p>
