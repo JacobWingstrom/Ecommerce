@@ -121,7 +121,7 @@ public abstract class Database {
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 					releaseConnection(con);
-					return new Buyer(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),
+					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),
 							rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
 				}
 			}
@@ -303,5 +303,6 @@ public abstract class Database {
 	 * isUserBanned(Account account); public LocalDate getUserSuspensionEnd(Account
 	 * account);
 	 */
+	
 
 }
