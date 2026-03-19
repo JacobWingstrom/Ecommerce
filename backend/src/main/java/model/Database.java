@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public abstract class Database {
+public class Database {
 	private static final int POOL_SIZE = 5;
-	private static Queue<Connection> availableConnections = new LinkedList();
+	private static Queue<Connection> availableConnections = new LinkedList<Connection>();
 	private static Set<Connection> usedConnections = new HashSet<>();
 	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC";
 	private static final String USER = "root";
@@ -116,11 +116,10 @@ public abstract class Database {
 	public static Account getUserByUsername(String username) throws SQLException {
 		try (Connection con = getConnection()) {
 			String query = "SELECT user_id, username, password_hashed, salt, area FROM users WHERE username = ?";
-			PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setString(1, username);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
-					releaseConnection(con);
 					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),
 							rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
 				}
@@ -171,7 +170,7 @@ public abstract class Database {
 			String query = "UPDATE users SET password_hashed = ? WHERE username = ?";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setString(1, hashedPassword);
-			stmt.setString(2, account.getPassword());
+			stmt.setString(2, account.getUsername());
 			stmt.executeUpdate();
 			account.setPassword(hashedPassword);
 			releaseConnection(con);
@@ -210,8 +209,7 @@ public abstract class Database {
 		try (Connection con = getConnection()) {
 			String query = "SELECT * FROM items WHERE highest_bidder_id = ? AND sold = TRUE";
 			PreparedStatement stmt = con.prepareStatement(query);
-			String userIdString = Integer.toString(userId);
-			stmt.setString(1, userIdString);
+			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Item item = buildItem(rs);
@@ -233,7 +231,10 @@ public abstract class Database {
 		String description = rs.getString("description");
 		BigDecimal currPrice = rs.getBigDecimal("curr_price");
 		int sellerId = rs.getInt("seller_id");
-		int highestBidderId = rs.getInt("highest_bidder_id");
+		Integer highestBidderId = rs.getInt("highest_bidder_id");
+		if (rs.wasNull()) {
+    		highestBidderId = null;
+		}
 
 		LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
 
@@ -247,8 +248,7 @@ public abstract class Database {
 		try (Connection con = getConnection()) {
 			String query = "SELECT * FROM items WHERE seller_id = ? AND sold = TRUE";
 			PreparedStatement stmt = con.prepareStatement(query);
-			String userIdString = Integer.toString(userId);
-			stmt.setString(1, userIdString);
+			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Item item = buildItem(rs);
@@ -266,12 +266,15 @@ public abstract class Database {
 	public static void addUserItemBought(int buyerId, int sellerId, Item item) {
 		try (Connection con = getConnection()) {
 			String query = "INSERT INTO items (seller_id, name, description, curr_price, highest_bidder_id, end_time, approved_flag, sold) "
-					+ "VALUES (?, ? ?, ?, NULL, ?, 0, ?, FALSE)";
+             + "VALUES (?, ?, ?, ?, ?, ?, 0, FALSE)";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, sellerId);
 			stmt.setString(2, item.getUsername());
 			stmt.setString(3, item.getDescription());
 			stmt.setBigDecimal(4, item.getHighestBid());
+			stmt.setNull(5, java.sql.Types.INTEGER); // highest_bidder_id NULL initially
+			//stmt.setTimestamp(6, java.sql.Timestamp.valueOf(item.get));
+			stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -280,7 +283,7 @@ public abstract class Database {
 
 	public static void markItemSold(int itemId, int buyerId) {
 		try (Connection con = getConnection()) {
-			String query = "UPDATE items SET sold = TRUE, highest_bidder_id = ?, WHERE item_id = ?";
+			String query = "UPDATE items SET sold = TRUE, highest_bidder_id = ? WHERE item_id = ?";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, buyerId);
 			stmt.setInt(2, itemId);
