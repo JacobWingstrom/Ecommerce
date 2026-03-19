@@ -21,8 +21,8 @@ public class AuthService {
 
 	// FIX THIS METHOD, DONT KNOW WHAT TO DO WITH THE LISTS (BUYER/SELLER)
 	public static Account signInUser(String username, String password) throws SQLException {
-
 		Account acct = Database.authenticate(username, password);
+		//System.out.println(acct.getUsername() + " " + acct.getPassword());
 		if (acct == null) {
 			return null;
 		}

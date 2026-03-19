@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import dto.AccountRequest;
 import dto.AccountResponse;
@@ -17,10 +19,24 @@ import service.AuthService;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+	@PostMapping("/hello")
+	public void hello(@RequestBody AccountRequest request) throws SQLException {
+		System.out.println("hello");
+
+	}	
+
 	@PostMapping("/login")
-	public AccountResponse login(@RequestBody AccountRequest request) throws SQLException {
+	public ResponseEntity<?> login(@RequestBody AccountRequest request) throws SQLException {
+		System.out.println(request.getUsername() + " " + request.getPassword());
 		Account account = AuthService.signInUser(request.getUsername(), request.getPassword());
-		return new AccountResponse(account);
+		if (account != null) {
+            // This sets response.ok to TRUE in React (Status 200)
+            return ResponseEntity.ok(new AccountResponse(account));
+        } else {
+            // This sets response.ok to FALSE in React (Status 401)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                 .body("Invalid username or password");
+        }
 	}
 
 	@PostMapping("/signup")

@@ -8,8 +8,13 @@ public class AccountResponse {
 	private String token;
 
 	public AccountResponse(Account account) {
-		this.username = account.getUsername();
-		this.token = "";
+		if (account == null) {
+			this.username = "";
+			this.token = "";
+		} else {
+			this.username = account.getUsername();
+			this.token = account.getToken();
+		}
 	}
 
 	public String getUsername() {

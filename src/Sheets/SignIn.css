@@ -4,7 +4,18 @@
     width: 100%;
     display: flex;
 }
- 
+
+form {
+    flex: 1;
+    background:  whitesmoke;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    padding: 40px;
+}
+
 .left-container {
     flex: 1;
     background:  #2e9e5e;

@@ -3,18 +3,18 @@ package model;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class Seller extends Account {
+public class Seller{
 
 	private Availabilty availabilty;
 	private Listing soldList; // All Items that have been sold
 	private Listing sellingList; // All Currently Selling Items
 
 	public Seller(String username, String password, String area) {
-		super(username, password, area);
+		//super(username, password, area);
 	}
 
 	public Seller(String username, String password, String salt, String area, int userId) {
-		super(username, password, salt, area, userId);
+		//super(username, password, salt, area, userId);
 	}
 
 	public Map<LocalDate, AvailabiltyBlock> getAvailabilty() {
