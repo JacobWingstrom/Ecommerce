@@ -1,0 +1,33 @@
+#AccountPage {
+    background-color: rgb(249, 235, 162);
+    height: 1000px;
+}
+
+#AccountPage-Header {
+    margin: 0px;
+    position: relative;
+    top: -30px;
+    height: 100px;
+
+}
+
+h1 {
+    position: relative;
+    left: 20px;
+    top: 25px;
+    font-size: 50px;
+}
+
+h2 {
+    position: relative;
+    left: 20px;
+}
+
+#AccountPage-Listings{
+    background-color: rgb(226, 249, 199);
+    width: calc(100% - 70px);
+    height: 100px;
+    position: relative;
+    left: 35px;
+    
+}
