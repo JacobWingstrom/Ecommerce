@@ -5,6 +5,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Map;
+
 import service.JWTTokenGenerator;
 
 public class Account {
@@ -31,12 +32,13 @@ public class Account {
 	 * This constructor is used specifically when loading an account from the
 	 * database
 	 */
-	public Account(String username, String passwordHash, String salt, String area, int userId) {
+	public Account(String username, String passwordHash, String salt, String area, int userId, String token) {
 		this.username = username;
 		this.password = passwordHash;
 		this.salt = salt;
 		this.area = area;
 		this.userId = userId;
+		this.token = token;
 	}
 
 	private String createToken() {

@@ -122,7 +122,7 @@ public abstract class Database {
 				if (rs.next()) {
 					releaseConnection(con);
 					return new Buyer(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),
-							rs.getString("area"), rs.getInt("user_id"));
+							rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
 				}
 			}
 
