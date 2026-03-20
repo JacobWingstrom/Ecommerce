@@ -162,12 +162,12 @@ public class Database {
 			return null;
 		}
 		String salt = user.getSalt();
-		//String hashedPassword = Account.saltPassword(password, salt);
+		String hashedPassword = Account.saltPassword(password, salt);
 
-		// if (hashedPassword.equals(user.getPassword())) {
-		// 	System.out.println("hash = password");
-		// 	return user;
-		// }
+		 if (hashedPassword.equals(user.getPassword())) {
+		 	System.out.println("hash = password");
+		 	return user;
+		  }
 
 		return user;
 	}
