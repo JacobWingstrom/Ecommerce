@@ -22,6 +22,7 @@ public class Database {
 	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC";
 	private static final String USER = "root";
 	private static final String PASSWORD = "RootPass123!";
+	private static final int pageSize = 20;
 	static {
 		initializePool();
 	}
@@ -292,19 +293,57 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+	public static Listing getStoreItems(int pageNumber){
+		try(Connection con = getConnection()){
+			int offset = (pageNumber - 1) * 20;
+			String query = "SELECT * FROM items LIMIT 20 OFFSET ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, offset);
+			ResultSet rs = stmt.executeQuery();
+			Listing listing = new Listing();
+			while(rs.next()){
+				Item item = buildItem(rs);
+				listing.addItem(item);
+			}
+			return listing;
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static Listing getUserItemsOnMarket(int userId, int pageNumber){
+		try(Connection con = getConnection()){
+			int offset = (pageNumber - 1) * 20;
+			String query = "SELECT * FROM items WHERE seller_id = ? AND sold = false ORDER BY item_id LIMIT 20 OFFSET ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, userId);
+			stmt.setInt(2, offset);
+			ResultSet rs = stmt.executeQuery();
+			Listing listing = new Listing();
+			while(rs.next()){
+				Item item = buildItem(rs);
+				listing.addItem(item);
+			}
+			return listing;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/*
-	 * public static List<Listing> getStoreItems(); public static List<Listing>
-	 * getUserItemsOnMarket(Account account); public static List<Listing>
-	 * getNewlyListedItems(); public static void addItem(Item item); public static
-	 * void updateItem(Item item); public static Bid getBidOnItem(Item item); public
-	 * static void setBidOnItem(Item item, Bid bid); public Availability
-	 * getUserAvailability(Account account); public void setUserAvailability(Account
-	 * account, Availability availability); public void addUserReport(Report
-	 * report); public List<Report> getUserReports(); public List<Account>
-	 * getActiveUsers(); public void banUser(String username); public void
-	 * suspendUser(Account account, LocalDate suspensionEndDate); public boolean
-	 * isUserBanned(Account account); public LocalDate getUserSuspensionEnd(Account
-	 * account);
+	 
+	 getNewlyListedItems(); public static void addItem(Item item); public static
+	 void updateItem(Item item); public static Bid getBidOnItem(Item item); public
+	 static void setBidOnItem(Item item, Bid bid); public Availability
+	 getUserAvailability(Account account); public void setUserAvailability(Account
+	 account, Availability availability); public void addUserReport(Report
+	 report); public List<Report> getUserReports(); public List<Account>
+	 getActiveUsers(); public void banUser(String username); public void
+	 suspendUser(Account account, LocalDate suspensionEndDate); public boolean
+	 isUserBanned(Account account); public LocalDate getUserSuspensionEnd(Account
+	 account);
 	 */
 	
 
