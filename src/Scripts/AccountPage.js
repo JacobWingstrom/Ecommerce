@@ -1,14 +1,14 @@
 import '../Sheets/AccountPage.css';
 import Header from './Header.js'
 //import pineappleLogo from '../Images/pineappleLogoPlaceholder.jpg'
-//import { useAuth } from '../Context/AuthContext.js'
+import { useAuth } from '../Context/AuthContext.js'
 
 function AccountHeader() {
-    //const { user } = useAuth();
+    const { user } = useAuth();
     
     return (
         <div id="AccountPage-Header">
-            <h1>UserName</h1>
+            <h1>{user}</h1>
         </div>
     )
 }

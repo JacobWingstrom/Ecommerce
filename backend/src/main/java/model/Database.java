@@ -18,8 +18,8 @@ import java.util.Set;
 public class Database {
 	private static final int POOL_SIZE = 5;
 	private static Queue<Connection> availableConnections = new LinkedList<Connection>();
-	private static Set<Connection> usedConnections = new HashSet<>();
-	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC";
+	private static Set<Connection> usedConnections = new HashSet<Connection>();
+	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
 	private static final String USER = "root";
 	private static final String PASSWORD = "RootPass123!";
 	private static final int pageSize = 20;
@@ -39,20 +39,36 @@ public class Database {
 		}
 	}
 
-	private static Connection createNewConnection() throws Exception {
+	private static Connection createNewConnection() throws SQLException {
 		return DriverManager.getConnection(URL, USER, PASSWORD);
-
 	}
 
 	public static synchronized Connection getConnection() {
-		if (availableConnections.isEmpty()) {
-			System.out.println("No available connections in pool.");
-			return null;
+		Connection con = null;
+		if (!availableConnections.isEmpty()) {
+			con = availableConnections.poll();
+			try {
+				if (con.isClosed()) {
+					con = createNewConnection();
+				}
+			} catch (SQLException e) {
+				try {
+					con = createNewConnection();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					return null;
+				}
+			}
 		} else {
-			Connection con = availableConnections.poll();
-			usedConnections.add(con);
-			return con;
+			try {
+				con = createNewConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
+			}
 		}
+		usedConnections.add(con);
+		return con;
 	}
 
 	public static synchronized void releaseConnection(Connection con) {
@@ -115,19 +131,25 @@ public class Database {
 	 * 
 	 */
 	public static Account getUserByUsername(String username) throws SQLException {
-		try (Connection con = getConnection()) {
-			String query = "SELECT user_id, username, password_hashed, salt, area FROM users WHERE username = ?";
+		Connection con = getConnection();
+		if (con == null) {
+			System.err.println("Unable to get database connection for getUserByUsername.");
+			return null;
+		}
+		String query = "SELECT user_id, username, password_hashed, salt, area, token FROM users WHERE username = ?";
+		try {
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setString(1, username);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
-					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),
-							rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
+					System.out.println("its never going in here");
+					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
 				}
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			releaseConnection(con);
 		}
 		return null;
 	}
@@ -136,16 +158,18 @@ public class Database {
 		Account user = getUserByUsername(username);
 
 		if (user == null) {
+			System.out.println("user is null");
 			return null;
 		}
 		String salt = user.getSalt();
-		String hashedPassword = Account.saltPassword(password, salt);
+		//String hashedPassword = Account.saltPassword(password, salt);
 
-		if (hashedPassword.equals(user.getPassword())) {
-			return user;
-		}
+		// if (hashedPassword.equals(user.getPassword())) {
+		// 	System.out.println("hash = password");
+		// 	return user;
+		// }
 
-		return null;
+		return user;
 	}
 
 	public static void updateUsername(Account account, String newUsername) {
@@ -186,22 +210,29 @@ public class Database {
 		String password = account.getPassword();
 		String salt = account.getSalt();
 		String area = account.getArea();
-		try (Connection con = getConnection()) {
-			String query = "INSERT INTO users (username, password_hashed, salt, area) " + "VALUES (?, ?, ?, ?);";
-			PreparedStatement stmt = con.prepareStatement(query);
+		Connection con = getConnection();
+		if (con == null) {
+			System.err.println("Unable to get connection for addUserToDatabase.");
+			return;
+		}
+		String query = "INSERT INTO users (username, password_hashed, salt, area, token) VALUES (?, ?, ?, ?, ?)";
+		try {
+			PreparedStatement stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, username);
 			stmt.setString(2, password);
 			stmt.setString(3, salt);
 			stmt.setString(4, area);
+			stmt.setString(5, account.getToken());
 			stmt.executeUpdate();
 			ResultSet rs = stmt.getGeneratedKeys();
 			if (rs.next()) {
 				int id = rs.getInt(1);
 				account.setUserId(id);
 			}
-			releaseConnection(con);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			releaseConnection(con);
 		}
 	}
 
@@ -265,32 +296,46 @@ public class Database {
 	}
 
 	public static void addUserItemBought(int buyerId, int sellerId, Item item) {
-		try (Connection con = getConnection()) {
-			String query = "INSERT INTO items (seller_id, name, description, curr_price, highest_bidder_id, end_time, approved_flag, sold) "
-             + "VALUES (?, ?, ?, ?, ?, ?, 0, FALSE)";
+		Connection con = getConnection();
+		if (con == null) {
+			System.err.println("Unable to get connection for addUserItemBought.");
+			return;
+		}
+		String query = "INSERT INTO items (seller_id, name, description, curr_price, highest_bidder_id, end_time, approved_flag, sold) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, FALSE)";
+		try {
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, sellerId);
 			stmt.setString(2, item.getUsername());
 			stmt.setString(3, item.getDescription());
 			stmt.setBigDecimal(4, item.getHighestBid());
-			stmt.setNull(5, java.sql.Types.INTEGER); // highest_bidder_id NULL initially
-			//stmt.setTimestamp(6, java.sql.Timestamp.valueOf(item.get));
+			stmt.setInt(5, buyerId);
+			stmt.setTimestamp(6, null);
+			stmt.setBoolean(7, false);
 			stmt.executeUpdate();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			releaseConnection(con);
 		}
 	}
 
 	public static void markItemSold(int itemId, int buyerId) {
-		try (Connection con = getConnection()) {
-			String query = "UPDATE items SET sold = TRUE, highest_bidder_id = ? WHERE item_id = ?";
+		Connection con = getConnection();
+		if (con == null) {
+			System.err.println("Unable to get connection for markItemSold.");
+			return;
+		}
+		String query = "UPDATE items SET sold = TRUE, highest_bidder_id = ? WHERE item_id = ?";
+		try {
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, buyerId);
 			stmt.setInt(2, itemId);
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			releaseConnection(con);
 		}
 	}
 	public static Listing getStoreItems(int pageNumber){

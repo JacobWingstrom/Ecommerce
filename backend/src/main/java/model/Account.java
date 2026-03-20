@@ -22,7 +22,8 @@ public class Account {
 
 		this.salt = AccountSalting.generateSalt();
 		this.username = username;
-		this.password = AccountSalting.hashPassword(password, this.salt);
+		//this.password = AccountSalting.hashPassword(password, this.salt);
+		this.password = password;
 		this.area = "UnKnown";
 		userId = -1;
 		this.token = createToken();

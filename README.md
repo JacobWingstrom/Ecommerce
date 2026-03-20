@@ -1,3 +1,10 @@
+Step 1: run npm start on root folder
+Step 2: in a new terminal run docker-compose down -v && docker-compose up --build
+Step 3: in a new terminal cd into backend
+Step 4: run mvn spring-boot:run
+Step 5: Celebrate
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
