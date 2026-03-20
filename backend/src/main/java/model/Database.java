@@ -17,14 +17,11 @@ import java.util.Set;
 
 public class Database {
 	private static final int POOL_SIZE = 5;
-	private static Queue<Connection> availableConnections = new LinkedList<Connection>();
-<<<<<<< HEAD
+	private static Queue<Connection> availableConnections = new LinkedList<Connection>();<<<<<<<HEAD
 	private static Set<Connection> usedConnections = new HashSet<Connection>();
-	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-=======
+	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";=======
 	private static Set<Connection> usedConnections = new HashSet<>();
-	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC";
->>>>>>> 0e316d2b8f94d77026d6f737a7d06d6f30131cd9
+	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC";>>>>>>>0e316d 2 b8f94d77026d6f737a7d06d6f30131cd9
 	private static final String USER = "root";
 	private static final String PASSWORD = "RootPass123!";
 	static {
@@ -176,12 +173,12 @@ public class Database {
 			return null;
 		}
 		String salt = user.getSalt();
-		//String hashedPassword = Account.saltPassword(password, salt);
+		String hashedPassword = Account.saltPassword(password, salt);
 
-		// if (hashedPassword.equals(user.getPassword())) {
-		// 	System.out.println("hash = password");
-		// 	return user;
-		// }
+		if (hashedPassword.equals(user.getPassword())) {
+			System.out.println("hash = password");
+			return user;
+		}
 
 		return user;
 	}
@@ -279,7 +276,7 @@ public class Database {
 		int sellerId = rs.getInt("seller_id");
 		Integer highestBidderId = rs.getInt("highest_bidder_id");
 		if (rs.wasNull()) {
-    		highestBidderId = null;
+			highestBidderId = null;
 		}
 
 		LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
