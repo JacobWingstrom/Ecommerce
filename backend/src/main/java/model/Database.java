@@ -143,8 +143,7 @@ public class Database {
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 					System.out.println("its never going in here");
-					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),
-							rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
+					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
 				}
 			}
 		} catch (SQLException e) {
@@ -165,10 +164,10 @@ public class Database {
 		String salt = user.getSalt();
 		String hashedPassword = Account.saltPassword(password, salt);
 
-		if (hashedPassword.equals(user.getPassword())) {
-			System.out.println("hash = password");
-			return user;
-		}
+		 if (hashedPassword.equals(user.getPassword())) {
+		 	System.out.println("hash = password");
+		 	return user;
+		  }
 
 		return user;
 	}
@@ -266,7 +265,7 @@ public class Database {
 		int sellerId = rs.getInt("seller_id");
 		Integer highestBidderId = rs.getInt("highest_bidder_id");
 		if (rs.wasNull()) {
-			highestBidderId = null;
+    		highestBidderId = null;
 		}
 
 		LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
@@ -339,29 +338,27 @@ public class Database {
 			releaseConnection(con);
 		}
 	}
-
-	public static Listing getStoreItems(int pageNumber) {
-		try (Connection con = getConnection()) {
+	public static Listing getStoreItems(int pageNumber){
+		try(Connection con = getConnection()){
 			int offset = (pageNumber - 1) * 20;
 			String query = "SELECT * FROM items LIMIT 20 OFFSET ?";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, offset);
 			ResultSet rs = stmt.executeQuery();
 			Listing listing = new Listing();
-			while (rs.next()) {
+			while(rs.next()){
 				Item item = buildItem(rs);
 				listing.addItem(item);
 			}
 			return listing;
 
-		} catch (SQLException e) {
+		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		return null;
 	}
-
-	public static Listing getUserItemsOnMarket(int userId, int pageNumber) {
-		try (Connection con = getConnection()) {
+	public static Listing getUserItemsOnMarket(int userId, int pageNumber){
+		try(Connection con = getConnection()){
 			int offset = (pageNumber - 1) * 20;
 			String query = "SELECT * FROM items WHERE seller_id = ? AND sold = false ORDER BY item_id LIMIT 20 OFFSET ?";
 			PreparedStatement stmt = con.prepareStatement(query);
@@ -369,29 +366,30 @@ public class Database {
 			stmt.setInt(2, offset);
 			ResultSet rs = stmt.executeQuery();
 			Listing listing = new Listing();
-			while (rs.next()) {
+			while(rs.next()){
 				Item item = buildItem(rs);
 				listing.addItem(item);
 			}
 			return listing;
-		} catch (SQLException e) {
+		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		return null;
 	}
-
+	
 	/*
-	 * 
-	 * getNewlyListedItems(); public static void addItem(Item item); public static
-	 * void updateItem(Item item); public static Bid getBidOnItem(Item item); public
-	 * static void setBidOnItem(Item item, Bid bid); public Availability
-	 * getUserAvailability(Account account); public void setUserAvailability(Account
-	 * account, Availability availability); public void addUserReport(Report
-	 * report); public List<Report> getUserReports(); public List<Account>
-	 * getActiveUsers(); public void banUser(String username); public void
-	 * suspendUser(Account account, LocalDate suspensionEndDate); public boolean
-	 * isUserBanned(Account account); public LocalDate getUserSuspensionEnd(Account
-	 * account);
+	 
+	 getNewlyListedItems(); public static void addItem(Item item); public static
+	 void updateItem(Item item); public static Bid getBidOnItem(Item item); public
+	 static void setBidOnItem(Item item, Bid bid); public Availability
+	 getUserAvailability(Account account); public void setUserAvailability(Account
+	 account, Availability availability); public void addUserReport(Report
+	 report); public List<Report> getUserReports(); public List<Account>
+	 getActiveUsers(); public void banUser(String username); public void
+	 suspendUser(Account account, LocalDate suspensionEndDate); public boolean
+	 isUserBanned(Account account); public LocalDate getUserSuspensionEnd(Account
+	 account);
 	 */
+	
 
 }
