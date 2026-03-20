@@ -17,13 +17,12 @@ import java.util.Set;
 
 public class Database {
 	private static final int POOL_SIZE = 5;
-	private static Queue<Connection> availableConnections = new LinkedList<Connection>();<<<<<<<HEAD
+	private static Queue<Connection> availableConnections = new LinkedList<Connection>();
 	private static Set<Connection> usedConnections = new HashSet<Connection>();
-	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";=======
-	private static Set<Connection> usedConnections = new HashSet<>();
-	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC";>>>>>>>0e316d 2 b8f94d77026d6f737a7d06d6f30131cd9
+	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
 	private static final String USER = "root";
 	private static final String PASSWORD = "RootPass123!";
+	private static final int pageSize = 20;
 	static {
 		initializePool();
 	}
@@ -132,7 +131,6 @@ public class Database {
 	 * 
 	 */
 	public static Account getUserByUsername(String username) throws SQLException {
-<<<<<<< HEAD
 		Connection con = getConnection();
 		if (con == null) {
 			System.err.println("Unable to get database connection for getUserByUsername.");
@@ -140,21 +138,13 @@ public class Database {
 		}
 		String query = "SELECT user_id, username, password_hashed, salt, area, token FROM users WHERE username = ?";
 		try {
-=======
-		try (Connection con = getConnection()) {
-			String query = "SELECT user_id, username, password_hashed, salt, area FROM users WHERE username = ?";
->>>>>>> 0e316d2b8f94d77026d6f737a7d06d6f30131cd9
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setString(1, username);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
-<<<<<<< HEAD
 					System.out.println("its never going in here");
-					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
-=======
 					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),
 							rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
->>>>>>> 0e316d2b8f94d77026d6f737a7d06d6f30131cd9
 				}
 			}
 		} catch (SQLException e) {
@@ -307,7 +297,6 @@ public class Database {
 	}
 
 	public static void addUserItemBought(int buyerId, int sellerId, Item item) {
-<<<<<<< HEAD
 		Connection con = getConnection();
 		if (con == null) {
 			System.err.println("Unable to get connection for addUserItemBought.");
@@ -316,27 +305,15 @@ public class Database {
 		String query = "INSERT INTO items (seller_id, name, description, curr_price, highest_bidder_id, end_time, approved_flag, sold) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, FALSE)";
 		try {
-=======
-		try (Connection con = getConnection()) {
-			String query = "INSERT INTO items (seller_id, name, description, curr_price, highest_bidder_id, end_time, approved_flag, sold) "
-             + "VALUES (?, ?, ?, ?, ?, ?, 0, FALSE)";
->>>>>>> 0e316d2b8f94d77026d6f737a7d06d6f30131cd9
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, sellerId);
 			stmt.setString(2, item.getUsername());
 			stmt.setString(3, item.getDescription());
 			stmt.setBigDecimal(4, item.getHighestBid());
-<<<<<<< HEAD
 			stmt.setInt(5, buyerId);
 			stmt.setTimestamp(6, null);
 			stmt.setBoolean(7, false);
 			stmt.executeUpdate();
-=======
-			stmt.setNull(5, java.sql.Types.INTEGER); // highest_bidder_id NULL initially
-			//stmt.setTimestamp(6, java.sql.Timestamp.valueOf(item.get));
-			stmt.executeUpdate();
-
->>>>>>> 0e316d2b8f94d77026d6f737a7d06d6f30131cd9
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -345,7 +322,6 @@ public class Database {
 	}
 
 	public static void markItemSold(int itemId, int buyerId) {
-<<<<<<< HEAD
 		Connection con = getConnection();
 		if (con == null) {
 			System.err.println("Unable to get connection for markItemSold.");
@@ -353,10 +329,6 @@ public class Database {
 		}
 		String query = "UPDATE items SET sold = TRUE, highest_bidder_id = ? WHERE item_id = ?";
 		try {
-=======
-		try (Connection con = getConnection()) {
-			String query = "UPDATE items SET sold = TRUE, highest_bidder_id = ? WHERE item_id = ?";
->>>>>>> 0e316d2b8f94d77026d6f737a7d06d6f30131cd9
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, buyerId);
 			stmt.setInt(2, itemId);
@@ -367,9 +339,49 @@ public class Database {
 			releaseConnection(con);
 		}
 	}
+
+	public static Listing getStoreItems(int pageNumber) {
+		try (Connection con = getConnection()) {
+			int offset = (pageNumber - 1) * 20;
+			String query = "SELECT * FROM items LIMIT 20 OFFSET ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, offset);
+			ResultSet rs = stmt.executeQuery();
+			Listing listing = new Listing();
+			while (rs.next()) {
+				Item item = buildItem(rs);
+				listing.addItem(item);
+			}
+			return listing;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static Listing getUserItemsOnMarket(int userId, int pageNumber) {
+		try (Connection con = getConnection()) {
+			int offset = (pageNumber - 1) * 20;
+			String query = "SELECT * FROM items WHERE seller_id = ? AND sold = false ORDER BY item_id LIMIT 20 OFFSET ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, userId);
+			stmt.setInt(2, offset);
+			ResultSet rs = stmt.executeQuery();
+			Listing listing = new Listing();
+			while (rs.next()) {
+				Item item = buildItem(rs);
+				listing.addItem(item);
+			}
+			return listing;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	/*
-	 * public static List<Listing> getStoreItems(); public static List<Listing>
-	 * getUserItemsOnMarket(Account account); public static List<Listing>
+	 * 
 	 * getNewlyListedItems(); public static void addItem(Item item); public static
 	 * void updateItem(Item item); public static Bid getBidOnItem(Item item); public
 	 * static void setBidOnItem(Item item, Bid bid); public Availability
@@ -381,6 +393,5 @@ public class Database {
 	 * isUserBanned(Account account); public LocalDate getUserSuspensionEnd(Account
 	 * account);
 	 */
-	
 
 }
