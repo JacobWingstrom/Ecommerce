@@ -164,12 +164,12 @@ public class Database {
 		String salt = user.getSalt();
 		String hashedPassword = Account.saltPassword(password, salt);
 
-		 if (hashedPassword.equals(user.getPassword())) {
+		if (hashedPassword.equals(user.getPassword())) {
 		 	System.out.println("hash = password");
 		 	return user;
-		  }
-
-		return user;
+		}
+		
+		return null;
 	}
 
 	public static void updateUsername(Account account, String newUsername) {
