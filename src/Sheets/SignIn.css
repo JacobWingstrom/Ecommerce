@@ -5,15 +5,8 @@
     display: flex;
 }
 
-form {
-    flex: 1;
-    background:  whitesmoke;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
-    padding: 40px;
+form{
+    all: unset;
 }
 
 .left-container {
@@ -109,6 +102,7 @@ form {
  
 .sign-in-button {
     width: 30%;
+    min-width: 80px;
     margin-top: 2px;
     padding: 12px;
     padding-bottom: 25px;

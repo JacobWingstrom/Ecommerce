@@ -30,19 +30,26 @@ public class AuthController {
 		System.out.println(request.getUsername() + " " + request.getPassword());
 		Account account = AuthService.signInUser(request.getUsername(), request.getPassword());
 		if (account != null) {
-            // This sets response.ok to TRUE in React (Status 200)
+			System.out.println("200");
             return ResponseEntity.ok(new AccountResponse(account));
         } else {
-            // This sets response.ok to FALSE in React (Status 401)
+			System.out.println("500");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                  .body("Invalid username or password");
         }
 	}
 
 	@PostMapping("/signup")
-	public SignupResponse signup(@RequestBody AccountRequest request) throws SQLException {
+	public ResponseEntity<?> signup(@RequestBody AccountRequest request) throws SQLException {
 		boolean success = AuthService.AddUser(request.getUsername(), request.getPassword());
-		return new SignupResponse(success);
+		if (success) {
+			System.out.println("200");
+            return ResponseEntity.ok(new SignupResponse(success));
+        } else {
+			System.out.println("500");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                 .body("Invalid username or password");
+        }
 	}
 
 	// DONT KNOW WHAT TO DO YET WITH THIS

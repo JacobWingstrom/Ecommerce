@@ -24,7 +24,7 @@
     align-items: center;
 }
 
-form{
+.SellPage-form{
     background-color: rgb(226, 249, 199);
 
     display: flex;

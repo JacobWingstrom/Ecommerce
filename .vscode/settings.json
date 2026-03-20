@@ -1,3 +1,5 @@
 {
-    "liveServer.settings.port": 3001
+    "liveServer.settings.port": 3001,
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

@@ -12,7 +12,8 @@ public class AuthService {
 
 	public static boolean AddUser(String username, String password) throws SQLException {
 
-		if (Database.authenticate(username, password) == null) {
+		if (Database.getUserByUsername(username) == null) {
+			System.out.println("user no exist");
 			Database.addUserToDatabase(new Account(username, password));
 			return true;
 		}
@@ -22,10 +23,10 @@ public class AuthService {
 	// FIX THIS METHOD, DONT KNOW WHAT TO DO WITH THE LISTS (BUYER/SELLER)
 	public static Account signInUser(String username, String password) throws SQLException {
 		Account acct = Database.authenticate(username, password);
-		//System.out.println(acct.getUsername() + " " + acct.getPassword());
 		if (acct == null) {
 			return null;
 		}
+		System.out.println(acct.getUsername() + " " + acct.getPassword());
 
 //		List<Item> buyerBoughtList = Database.getUserItemsBought(0);
 //		List<Item> buyerBidList = Database.getUserItemsBought(0);
