@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -376,11 +377,55 @@ public class Database {
 		}
 		return null;
 	}
-	
+	public static void addItem(Item item, int sellerId){
+		try(Connection con  = getConnection()){
+			String query = "INSERT INTO items (\r\n" + //
+							"    seller_id,\r\n" + //
+							"    name,\r\n" + //
+							"    description,\r\n" + //
+							"    curr_price,\r\n" + //
+							"    highest_bidder_id,\r\n" + //
+							"    end_time,\r\n" + //
+							"    approved_flag,\r\n" + //
+							"    tag,\r\n" + //
+							"    sold\r\n" + //
+							")\r\n" + //
+							"VALUES (?, ?, ?, ?, NULL, ?, FALSE, ?, FALSE);";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, sellerId);
+			stmt.setString(2, item.getUsername());
+			stmt.setString(3, item.getDescription());
+			stmt.setBigDecimal(4, item.getHighestBid());
+			stmt.setTimestamp(5, Timestamp.valueOf(item.getEndTime()));
+			stmt.setString(6, item.getTag());
+			stmt.executeUpdate();
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	public static void updateItem(Item item, int highest_bidder_id){
+		try(Connection con = getConnection()){
+			String query = "UPDATE ITEMS" + 
+			" SET name = ?, description = ?, curr_price = ?"
+			+ ", highest_bidder_id = ?, end_time = ?, tag = ? WHERE item_id = ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setString(1, item.getUsername());
+			stmt.setString(2, item.getDescription());
+			stmt.setBigDecimal(3, item.getHighestBid());
+			stmt.setInt(4, highest_bidder_id);
+			stmt.setTimestamp(5, Timestamp.valueOf(item.getEndTime()));
+			stmt.setString(6, item.getTag());
+			stmt.setInt(7, item.getItemId());
+			stmt.executeUpdate()
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 	/*
 	 
-	 getNewlyListedItems(); public static void addItem(Item item); public static
-	 void updateItem(Item item); public static Bid getBidOnItem(Item item); public
+	 getNewlyListedItems();
+	 public static Bid getBidOnItem(Item item); public
 	 static void setBidOnItem(Item item, Bid bid); public Availability
 	 getUserAvailability(Account account); public void setUserAvailability(Account
 	 account, Availability availability); public void addUserReport(Report

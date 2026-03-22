@@ -91,4 +91,8 @@ public class Item {
 		this.highestBuyer = new Buyer(highestBuyer);
 	}
 
+	public LocalDateTime getEndTime(){
+		return this.end_time;
+	}
+
 }
