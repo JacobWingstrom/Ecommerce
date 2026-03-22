@@ -132,9 +132,9 @@ public class Database {
 	 * 
 	 */
 	public static Account getUserByUsername(String username) throws SQLException {
+		username = username.trim(); // Trim whitespace
 		Connection con = getConnection();
 		if (con == null) {
-			System.err.println("Unable to get database connection for getUserByUsername.");
 			return null;
 		}
 		String query = "SELECT user_id, username, password_hashed, salt, area, token FROM users WHERE username = ?";
@@ -143,7 +143,6 @@ public class Database {
 			stmt.setString(1, username);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
-					System.out.println("its never going in here");
 					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
 				}
 			}
@@ -152,6 +151,7 @@ public class Database {
 		} finally {
 			releaseConnection(con);
 		}
+		System.out.println("returning null");
 		return null;
 	}
 

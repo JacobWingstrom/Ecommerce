@@ -56,7 +56,7 @@ function SellPageBody() {
 
     return (
         <div id="SellPage-body">
-            <form onSubmit={handleSubmit}>
+            <form className="SellPage-form" onSubmit={handleSubmit}>
                 {error && <p id="SellPage-error" style={{color: 'red'}}>{error}</p>}
                 <label>
                     <p>Item Name:</p>
