@@ -1,20 +1,7 @@
 import '../Sheets/AccountPage.css';
 import Header from './Header.js'
-//import pineappleLogo from '../Images/pineappleLogoPlaceholder.jpg'
 import { useAuth } from '../Context/AuthContext.js'
 import { useState } from 'react'
-
-function AccountHeader() {
-    const { user } = useAuth();
-    
-    return (
-        <div id="AccountPage-Header">
-            <h1>{user}</h1>
-        </div>
-    )
-}
-
-
 
 function Buttons({ setter }) {
     return ( 
@@ -26,55 +13,50 @@ function Buttons({ setter }) {
     )
 }
 
-function MyItems() {
+function AccountHeader({ setter }) {
+    const { user } = useAuth();
+    
     return (
-        <div className='AccountPage-MyItems'>
-
+        <div id="AccountPage-Header">
+            <h1>{user}</h1>
+            <Buttons setter={setter}/>
         </div>
     )
 }
 
-function BidsWon() {
-        <div className='AccountPage-BidsWon'>
+function Listings({ currentPage }){
+    return (
+        <div className='AccountPage-ContentPage'>
             
         </div>
-}
-
-function BiddingOn() {
-        <div className='AccountPage-BiddingOn'>
-            
-        </div>
+    )
 }
 
 function Content({ currentPage }) {
     return (
         <div className="AccountPage-Content">
-            {currentPage === 'MyItems' && <MyItems />}
-            {currentPage === 'BidsWon' && <BidsWon />}
-            {currentPage === 'BiddingOn' && <BiddingOn />}
+            {currentPage && <Listings currentPage={ currentPage }/>}
         </div>
     )
 }
 
-
-
-function AccountBody() {
-    const [currentPage, setCurrentPage] = useState('MyItems');
+function AccountBody({ currentPage }) {
 
     return (
         <div id="AccountPage-Body">
-            <Buttons setter={ setCurrentPage }/>
             <Content currentPage={ currentPage }/>
         </div>
     )
 }
 
 export default function AccountPage() {
+    const [currentPage, setCurrentPage] = useState('MyItems');
+
     return (
         <div id="AccountPage">
             <Header />
-            <AccountHeader />
-            <AccountBody />
+            <AccountHeader setter={ setCurrentPage }/>
+            <AccountBody currentPage={ currentPage }/>
         </div>
     )
 }

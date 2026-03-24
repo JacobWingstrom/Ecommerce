@@ -1,6 +1,6 @@
 .Header-header{
-    background-color: rgb(226, 249, 199);
-    position: relative;
+    background-color: #2e9e5e;
+    position: fixed;
     top: 0px;
     width: 100%;
     height: 50px;
@@ -11,8 +11,9 @@
     margin: 0px;
 }
 
-button {
-    background-color: rgb(255, 213, 0);
+.Header-button {
+    background-color:  #f9a916;
+    color: black;
     text-align: center;
     border: 1px solid black;
     border-radius: 5px;
@@ -20,13 +21,13 @@ button {
     width: 75px;
 }
 
-button:hover {
-    background-color: rgb(216, 181, 3);
+.Header-button:hover {
+    background-color: #d69111;
     cursor: pointer;
 }
 
-img {
-    height: 40px;
+#Header-img {
+    height: 42px;
     width: auto;
     object-fit: contain;
 }
