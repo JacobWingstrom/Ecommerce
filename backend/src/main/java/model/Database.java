@@ -417,7 +417,7 @@ public class Database {
 			stmt.setTimestamp(5, Timestamp.valueOf(item.getEndTime()));
 			stmt.setString(6, item.getTag());
 			stmt.setInt(7, item.getItemId());
-			stmt.executeUpdate()
+			stmt.executeUpdate();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}

@@ -5,10 +5,6 @@
     display: flex;
 }
 
-form{
-    all: unset;
-}
-
 .left-container {
     flex: 1;
     background:  #2e9e5e;
