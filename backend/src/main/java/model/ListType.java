@@ -1,6 +1,6 @@
 package model;
 
 public enum ListType {
-	CurrentBidItems, CurrentItemsSold
+	CurrentBidItems, CurrentItemsOnMarket, AllItemsWon
 
 }
