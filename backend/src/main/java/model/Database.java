@@ -450,6 +450,14 @@ public class Database {
 		}
 		return null;
 	}
+	/**
+	 * Methods to implement this iteration:
+	 * 
+	 * addBidToDatabase
+	 * setBidOnItem
+	 * getHighestBidOnItem
+	 * getBidOnItem
+	 */
 	/*
 	 
 	 getNewlyListedItems();
