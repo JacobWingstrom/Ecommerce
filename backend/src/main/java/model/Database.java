@@ -422,44 +422,89 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-	public static Listing getUserItemsBidOn(int userId, int pageNumber){
+	public static ArrayList<UserBidItem> getUserItemsBidOn(int userId, int pageNumber){
 		int pageSize = 20;
-		int offset = (pageNumber - 1) * 20;
-		try(Connection con = getConnection()){
-			String query = 
-    		"SELECT i.item_id, i.name, i.description, i.tag, i.curr_price AS current_highest_bid, i.end_time " +
-    		"FROM items i " +
-    		"JOIN bids b ON i.item_id = b.item_id " +
-    		"WHERE b.bidder_id = ? AND i.sold = FALSE " +
-    		"GROUP BY i.item_id, i.name, i.description, i.tag, i.curr_price, i.end_time " +
-    		"LIMIT ? OFFSET ?";
+		int offset = (pageNumber - 1) * pageSize;
+
+		try (Connection con = getConnection()) {
+			String query =
+				"SELECT i.item_id, i.name, i.description, i.tag, i.curr_price AS current_highest_bid, i.end_time, " +
+				"b.bid_id AS user_bid_id, b.amount AS user_bid_amount, b.timestamp AS user_bid_time " +
+				"FROM items i " +
+				"JOIN bids b ON i.item_id = b.item_id AND b.bidder_id = ? " +
+				"WHERE i.sold = FALSE " +
+				"GROUP BY i.item_id, i.name, i.description, i.tag, i.curr_price, i.end_time, b.bid_id, b.amount, b.timestamp " +
+				"LIMIT ? OFFSET ?";
+
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, userId);
 			stmt.setInt(2, pageSize);
 			stmt.setInt(3, offset);
+
 			ResultSet rs = stmt.executeQuery();
-			Listing listing = new Listing();
-			while(rs.next()){
-				Item item = buildItem(rs);
-				listing.addItem(item);
+			ArrayList<UserBidItem> listing = new ArrayList<>();
+
+			while (rs.next()) {
+				// Build the Item object
+				Item item = new Item(
+					rs.getString("name"),
+					rs.getString("description"),
+					rs.getString("tag"),
+					rs.getInt("item_id"),
+					rs.getBigDecimal("curr_price"),
+					rs.getTimestamp("end_time").toLocalDateTime()
+				);
+
+				// Build the user's Bid object
+				Bid userBid = new Bid(
+					rs.getInt("user_bid_id"),
+					userId,
+					rs.getInt("item_id"),
+					rs.getBigDecimal("user_bid_amount"),
+					rs.getTimestamp("user_bid_time").toLocalDateTime()
+				);
+
+				// Wrap in a composite object if Listing is designed for that
+				listing.add(new UserBidItem(item, userBid));  // or listing.addItem(new UserBidItem(item, userBid));
 			}
+
 			return listing;
 
-		}catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	/**
-	 * Methods to implement this iteration:
-	 * 
-	 * addBidToDatabase
-	 * setBidOnItem
-	 * getHighestBidOnItem
-	 * getBidOnItem
-	 */
+	
+	public static void addBidToDatabase(Bid bid){
+		try(Connection con = getConnection()){
+			String query = "INSERT INTO bids (bidder_id, item_id, amount) VALUES (?, ?, ?)";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, bid.getBidderId());
+			stmt.setInt(2, bid.getItemId());
+			stmt.setBigDecimal(3, bid.getAmount());
+			stmt.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	public static void setBidOnItem(int bidId, BigDecimal amount){
+		try(Connection con = getConnection()){
+			String query = "UPDATE bids SET amount = ? WHERE bid_id = ?";
+			PreparedStatement stmt= con.prepareStatement(query);
+			stmt.setBigDecimal(1, amount);
+			stmt.setInt(2, bidId);
+			stmt.executeUpdate();
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+
 	/*
-	 
+	LIST OF ALL ADMIN-RELATED METHODS 
+
 	 getNewlyListedItems();
 	 public static Bid getBidOnItem(Item item); public
 	 static void setBidOnItem(Item item, Bid bid); public Availability
