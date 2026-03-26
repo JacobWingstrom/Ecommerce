@@ -417,10 +417,38 @@ public class Database {
 			stmt.setTimestamp(5, Timestamp.valueOf(item.getEndTime()));
 			stmt.setString(6, item.getTag());
 			stmt.setInt(7, item.getItemId());
-			stmt.executeUpdate()
+			stmt.executeUpdate();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+	}
+	public static Listing getUserItemsBidOn(int userId, int pageNumber){
+		int pageSize = 20;
+		int offset = (pageNumber - 1) * 20;
+		try(Connection con = getConnection()){
+			String query = 
+    		"SELECT i.item_id, i.name, i.description, i.tag, i.curr_price AS current_highest_bid, i.end_time " +
+    		"FROM items i " +
+    		"JOIN bids b ON i.item_id = b.item_id " +
+    		"WHERE b.bidder_id = ? AND i.sold = FALSE " +
+    		"GROUP BY i.item_id, i.name, i.description, i.tag, i.curr_price, i.end_time " +
+    		"LIMIT ? OFFSET ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, userId);
+			stmt.setInt(2, pageSize);
+			stmt.setInt(3, offset);
+			ResultSet rs = stmt.executeQuery();
+			Listing listing = new Listing();
+			while(rs.next()){
+				Item item = buildItem(rs);
+				listing.addItem(item);
+			}
+			return listing;
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 	/*
 	 
