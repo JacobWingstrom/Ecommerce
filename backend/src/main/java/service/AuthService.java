@@ -8,7 +8,7 @@ import model.Buyer;
 import model.Database;
 import model.Item;
 
-public class AuthService {
+public abstract class AuthService {
 
 	public static boolean AddUser(String username, String password) throws SQLException {
 

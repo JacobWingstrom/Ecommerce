@@ -1,37 +1,77 @@
-#SellPage-header{
-    background-color: rgb(249, 235, 162);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+#SellPage{
+    position: fixed;
+    top: 50px;
+    background-color: #f9a916;
     width: 100%;
-    box-sizing: border-box;
-    padding: 0 20px;
-    border:  2px rgb(180, 166, 97) solid;
+    height: 100vh;
 }
 
-#SellPage-Button{
-    width: 90px;
+#SellPage-header{
+    background-color: #f9a916;
+    width: 100%;
+    padding-left: 25px;
+    border-bottom: black 2px solid;
+    margin-bottom: 10px;
 }
 
 #SellPage-body{
-    position: absolute;
-    height: calc(100% - 138px);
-    width: 100%;
-    background-color: rgb(249, 235, 162);
-
-    display: flex;
-    justify-content: center;
+    position: fixed;
+    left: calc(50% - 275px);
     align-items: center;
+
 }
-
-.SellPage-form{
-    background-color: rgb(226, 249, 199);
-
+ 
+.SellPage-form {
+    background-color: whitesmoke;
+    border: 3px solid black;
+    border-radius: 4px;
+    padding: 35px 32px;
+    padding-left: 80px;
+    width: 100%;
+    max-width: 1000px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 20px;
+    box-shadow: 6px 6px 0px black;
+}
+ 
+.SellPage-Label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: rgb(46, 46, 46);
+}
 
-    padding: 30px;
-    max-width: 400px;
-    width: 100%;
+#SellPage-Button{
+    align-self: center;
+    width: 70%;
+    min-width: 80px;
+    margin-top: 2px;
+    padding: 12px;
+    padding-bottom: 25px;
+    background-color: black;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid black;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#SellPage-Button:disabled{
+    background-color: rgba(0, 0, 0, 0.493);
+}
+
+#SellPage-Button:enabled:hover {
+    background-color: #f97316;
+    border-color: black;
+    color: white;
+}
+
+.SellPage-Input{
+    width: 80%;
 }

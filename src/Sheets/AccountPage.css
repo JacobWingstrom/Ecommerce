@@ -1,33 +1,66 @@
-#AccountPage {
-    background-color: rgb(249, 235, 162);
-    height: 1000px;
+#AccountPage{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    top: 52px;
 }
 
-#AccountPage-Header {
-    margin: 0px;
-    position: relative;
-    top: -30px;
-    height: 100px;
+#AccountPage-Header{
+    position: fixed;
+    background-color: #f9a916;
+    width: 100%;
+    padding-left: 25px;
+    border-bottom: black 2px solid;
+}
+
+.AccountPage-Buttons{
+    position: fixed;
+    top: 75px;
+    left: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 50%;
+    background-color: #2e9e5e;
+    height: 40px;
+    border-radius: 10px;
+    text-shadow: 100px;
+    box-shadow: 0 1px 10px rgb(46, 46, 46);
+}
+
+.AccountPage-Button {
+    background-color:  #f9a916;
+    color: black;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
+}
+
+.AccountPage-Button:hover {
+    background-color: #d69111;
+    cursor: pointer;
+}
+
+.AccountPage-Content{
+    position: fixed;
+    background-color: #f9a916;
+    top: 135px;
+    width: 100vw;
+    height:100%;
+    padding: 20px 10%;
+}
+
+.AccountPage-ContentPage{
+    background-color: #2e9e5e;
+    width: 80%;
+    height: 77%;
+    overflow-y: scroll;
+    box-shadow: 0 1px 10px rgb(46, 46, 46);
+    border-radius: 10px;
+    padding: 10px;
 
 }
 
-h1 {
-    position: relative;
-    left: 20px;
-    top: 25px;
-    font-size: 50px;
-}
-
-h2 {
-    position: relative;
-    left: 20px;
-}
-
-#AccountPage-Listings{
-    background-color: rgb(226, 249, 199);
-    width: calc(100% - 70px);
-    height: 100px;
-    position: relative;
-    left: 35px;
-    
-}

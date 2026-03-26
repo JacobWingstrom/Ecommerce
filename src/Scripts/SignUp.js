@@ -1,6 +1,6 @@
 import '../Sheets/SignUp.css';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import pineappleLogo from '../Images/pineappleLogoPlaceholder.jpg';
  
 async function registerUser(credentials) {
@@ -83,7 +83,7 @@ function SignUpContainer() {
     return (
         <div className='container'>
             <img src={pineappleLogo} alt="Pineapple logo" className='image' />
-            <h2>Get Started With Your Account</h2>
+            <h2 className="h2">Get Started With Your Account</h2>
             <SignUpForm />
         </div>
     );

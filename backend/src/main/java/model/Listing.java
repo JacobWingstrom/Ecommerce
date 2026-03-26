@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Listing {
 
@@ -21,6 +22,14 @@ public class Listing {
 		// Deep copy
 		this.itemListings.clear();
 		for (Item item : itemListings.getItemListings()) {
+			this.itemListings.add(new Item(item));
+		}
+	}
+
+	
+	public Listing(List<Item> items) {
+		this.itemListings.clear();
+		for (Item item : items) {
 			this.itemListings.add(new Item(item));
 		}
 	}
