@@ -42,7 +42,7 @@ function SellPageBody() {
             data.append('price', price);
             data.append('description', description);
             data.append('image', image);
-        
+            console.log(image)
             await listItem(data, token);
 
             navigate('/AccountPage')
