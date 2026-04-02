@@ -335,6 +335,7 @@ public class Database {
 		BigDecimal currPrice = rs.getBigDecimal("curr_price");
 		int sellerId = rs.getInt("seller_id");
 		Integer highestBidderId = rs.getInt("highest_bidder_id");
+		byte[] image = rs.getBytes("image");
 		if (rs.wasNull()) {
     		highestBidderId = null;
 		}
@@ -343,7 +344,7 @@ public class Database {
 
 		String tag = rs.getString("tag");
 
-		return new Item(name, description, tag, endTime);
+		return new Item(name, description, tag, endTime, image);
 	}
 	/**
 	 * Retrieves a List of Item objects representing the items sold by the user with the specified user ID.
@@ -495,8 +496,9 @@ public class Database {
 							"    approved_flag,\r\n" + //
 							"    tag,\r\n" + //
 							"    sold\r\n" + //
+							"    image\r\n" + //
 							")\r\n" + //
-							"VALUES (?, ?, ?, ?, NULL, ?, FALSE, ?, FALSE);";
+							"VALUES (?, ?, ?, ?, NULL, ?, FALSE, ?, FALSE, ?);";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, sellerId);
 			stmt.setString(2, item.getUsername());
@@ -504,7 +506,9 @@ public class Database {
 			stmt.setBigDecimal(4, item.getHighestBid());
 			stmt.setTimestamp(5, Timestamp.valueOf(item.getEndTime()));
 			stmt.setString(6, item.getTag());
+			stmt.setBytes(7, item.getImage());
 			stmt.executeUpdate();
+			stmt.close();
 			
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -572,7 +576,8 @@ public class Database {
 					rs.getString("tag"),
 					rs.getInt("item_id"),
 					rs.getBigDecimal("curr_price"),
-					rs.getTimestamp("end_time").toLocalDateTime()
+					rs.getTimestamp("end_time").toLocalDateTime(),
+					rs.getBytes("image")
 				);
 
 				// Build the user's Bid object
