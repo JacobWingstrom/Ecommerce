@@ -1,12 +1,8 @@
 import '../Sheets/BuyPage.css'
 import Header from "./Header.js"
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from '../Context/AuthContext.js'
-
-function Filters() {
-
-}
+import Listings from './Listings.js';
 
 function BuyPageHeader() {
     return (
@@ -16,27 +12,44 @@ function BuyPageHeader() {
     );
 }
 
-function Listings({ currentPage }){
-    return (
-        <div className='BuyPage-ContentPage'>
-            
-        </div>
-    )
-}
+function Content() {
+    const [ data, setData] = useState(null);
+    const { token, user } = useAuth();
+    
+    async function handleFetch(token, user) {
+        const response = await fetch(`http://localhost:8080/api/buy/bids/active`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            username: user,
+            pageNum: 1
+        })
+        });
 
-function Content({ currentPage }) {
+        if (!response.ok) throw new Error("Fetch failed");
+        return response.json();
+    }
+
+    useEffect( () => {
+        if (!user) return;
+        handleFetch(token, user)
+            .then(data => setData(data.items))
+            .catch(err => console.log(err))
+    }, [token, user]);
+    
     return (
         <div className="BuyPage-Content">
-            {<Listings currentPage={ currentPage }/>}
+            {<Listings data={ data }/>}
         </div>
     )
 }
 
-function BuyPageBody({ currentPage }) {
-
+function BuyPageBody() {
     return (
         <div id="BuyPage-Body">
-            <Content currentPage={ currentPage }/>
+            <Content/>
         </div>
     )
 }
