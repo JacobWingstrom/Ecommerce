@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS items (
     approved_flag BOOLEAN DEFAULT FALSE,
     tag VARCHAR(50),
     sold BOOLEAN NOT NULL DEFAULT FALSE,
+    image BLOB,
     FOREIGN KEY (seller_id) REFERENCES users(user_id),
     FOREIGN KEY (highest_bidder_id) REFERENCES users(user_id)
 );
