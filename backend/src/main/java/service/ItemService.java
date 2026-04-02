@@ -1,11 +1,16 @@
 package service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import model.Account;
 import model.Database;
+import model.Item;
 
 public class ItemService {
     
@@ -14,7 +19,15 @@ public class ItemService {
 
 		if (acct == null) return false;
 		
-		System.out.println("user exist");
+		Item item = null;
+
+		try {
+			item = new Item(title, description, null, BigDecimal.valueOf(Double.parseDouble(minimumPrice)), LocalDate.parse(endDate).atStartOfDay(), image.getBytes());
+		} catch(IOException err) {
+			return false;
+		}
+
+		Database.addItem(item, acct.getUserID());
 
 		return true;
 	}

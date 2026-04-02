@@ -1,14 +1,14 @@
 import '../Sheets/AccountPage.css';
 import Header from './Header.js'
 import { useAuth } from '../Context/AuthContext.js'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function Buttons({ setter }) {
     return ( 
         <div className="AccountPage-Buttons">
-            <button onClick={ () => setter('MyItems') } className="AccountPage-Button" id="AccountPage-MyItems">My Items</button>
-            <button onClick={ () => setter('BidsWon') } className="AccountPage-Button" id="AccountPage-BidsWon">Bids Won</button>
-            <button onClick={ () => setter('BiddingOn') } className="AccountPage-Button" id="AccountPage-BiddingOn">Bidding On</button>
+            <button onClick={ () => setter('Selling/Current') } className="AccountPage-Button" id="AccountPage-MyItems">My Items</button>
+            <button onClick={ () => setter('Bids/Won') } className="AccountPage-Button" id="AccountPage-BidsWon">Bids Won</button>
+            <button onClick={ () => setter('Bids/Current') } className="AccountPage-Button" id="AccountPage-BiddingOn">Bidding On</button>
         </div>
     )
 }
@@ -24,18 +24,53 @@ function AccountHeader({ setter }) {
     )
 }
 
-function Listings({ currentPage }){
+function Listings({ data }){
+    
     return (
         <div className='AccountPage-ContentPage'>
-            
+            {data && data.map(item => (
+                <div key={item.itemId}>
+                    <h4>{item.username}</h4>
+                    <p>{item.description}</p>
+                    <p>{item.highestBid}</p>
+                    <p>{item.end_time}</p>
+                    <img src={`data:image/jpeg;base64,${item.image}`} alt={item.description} />
+                </div>
+            ))}
         </div>
     )
 }
 
 function Content({ currentPage }) {
+    const [ data, setData] = useState(null);
+    const { token, user } = useAuth();
+    
+    async function handleFetch(currentPage, token, user) {
+        const response = await fetch(`http://localhost:8080/api/user/${currentPage}`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            username: user,
+            pageNum: 1
+        })
+        });
+
+        if (!response.ok) throw new Error("Fetch failed");
+        return response.json();
+    }
+
+    useEffect( () => {
+        if (!user) return;
+        handleFetch(currentPage, token, user)
+            .then(data => setData(data.items))
+            .catch(err => console.log(err))
+    }, [currentPage, token, user]);
+
     return (
         <div className="AccountPage-Content">
-            {currentPage && <Listings currentPage={ currentPage }/>}
+            {currentPage && <Listings data={ data }/>}
         </div>
     )
 }
@@ -50,7 +85,7 @@ function AccountBody({ currentPage }) {
 }
 
 export default function AccountPage() {
-    const [currentPage, setCurrentPage] = useState('MyItems');
+    const [currentPage, setCurrentPage] = useState('Selling/Current');
 
     return (
         <div id="AccountPage">

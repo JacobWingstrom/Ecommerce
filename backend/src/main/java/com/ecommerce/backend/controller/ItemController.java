@@ -35,7 +35,6 @@ public class ItemController {
     	@RequestPart("endDate") String endDate,
 		@RequestHeader("Authorization") String authHeader
 	) throws SQLException {
-
 		if (ItemService.AddListing(title, description, price, endDate, image, authHeader.substring(7))) {
 			System.out.println("add listing 200");
 			return ResponseEntity.ok(new NewListingResponse(true));

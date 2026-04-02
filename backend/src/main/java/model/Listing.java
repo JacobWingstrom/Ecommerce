@@ -8,9 +8,7 @@ public class Listing {
 	private ArrayList<Item> itemListings;
 
 	public Listing() {
-
 		this.itemListings = new ArrayList<Item>();
-
 	}
 
 	public ArrayList<Item> getItemListings() {
@@ -20,6 +18,7 @@ public class Listing {
 	// COPY CONSTRUCTOR
 	public Listing(Listing itemListings) {
 		// Deep copy
+		this.itemListings = new ArrayList<Item>();
 		this.itemListings.clear();
 		for (Item item : itemListings.getItemListings()) {
 			this.itemListings.add(new Item(item));
@@ -28,6 +27,7 @@ public class Listing {
 
 	
 	public Listing(List<Item> items) {
+		this.itemListings = new ArrayList<Item>();
 		this.itemListings.clear();
 		for (Item item : items) {
 			this.itemListings.add(new Item(item));
@@ -55,5 +55,4 @@ public class Listing {
 	public boolean editItem() {
 		return false;
 	}
-
 }

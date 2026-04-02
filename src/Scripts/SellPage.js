@@ -44,12 +44,10 @@ function SellPageBody() {
             data.append('description', description);
             data.append('image', image);
             data.append('endDate', endDate);
-            console.log(image)
             await listItem(data, token);
 
             navigate('/AccountPage')
         } catch {
-            console.log("kjgkgk")
             setError('Invalid Listing');
         }
     }
@@ -78,7 +76,6 @@ function SellPageBody() {
                     <p className="SellPage-Label">End Date:</p>
                     <input className="SellPage-Input" type="date" name="endDate" onChange={ e => setEndDate(e.target.value) } />
                 </label>
-
                 <br />
 
                 <input id="SellPage-Button" type="submit" value="List Item" disabled={!title || !description || !price || !image || !endDate}/>

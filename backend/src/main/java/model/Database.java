@@ -525,8 +525,8 @@ public class Database {
 							"    end_time,\r\n" + //
 							"    approved_flag,\r\n" + //
 							"    tag,\r\n" + //
-							"    sold\r\n" + //
-							"    image\r\n" + //
+							"    sold,\r\n" + //
+							"    `image`\r\n" + //
 							")\r\n" + //
 							"VALUES (?, ?, ?, ?, NULL, ?, FALSE, ?, FALSE, ?);";
 			PreparedStatement stmt = con.prepareStatement(query);

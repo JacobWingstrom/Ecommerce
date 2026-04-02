@@ -11,7 +11,7 @@ import model.Listing;
 
 public abstract class UserService {
 
-	public static List<Item> getListingType(String username, ListType type) throws SQLException {
+	public static List<Item> getListingType(String username, ListType type, int pageNum) throws SQLException {
 
 		Account acct = Database.getUserByUsername(username);
 
@@ -20,7 +20,7 @@ public abstract class UserService {
 //			return DataBase.
 			// UPDATE NAME
 		} else if (type == ListType.CurrentItemsOnMarket) {
-			return Database.getUserItemsOnMarket(acct.getUserID(), 0).getItemListings();
+			return Database.getUserItemsOnMarket(acct.getUserID(), pageNum).getItemListings();
 		} else if (type == ListType.AllItemsWon) {
 			return Database.getUserItemsBought(acct.getUserID());
 		}

@@ -26,6 +26,18 @@ public class Item {
 		this.image = image;
 
 	}
+
+	public Item(String username, String description, String tag, BigDecimal highestBid, LocalDateTime end_time, byte[] image) {
+		this.itemId = -1;
+		this.username = username;
+		this.description = description;
+		this.tag = tag;
+		this.highestBid = highestBid;
+		this.highestBuyer = null;
+		this.end_time = end_time;
+		this.image = image;
+
+	}
 	public Item(String username, String description, String tag, int itemId, BigDecimal highestBid, LocalDateTime end_time, byte[] image){
 		this.itemId = itemId;
 		this.username = username;
@@ -38,13 +50,14 @@ public class Item {
 	}
 
 	public Item(Item item) {
-
 		this.username = item.username;
 		this.description = item.description;
 		this.tag = item.tag;
 		this.highestBid = item.highestBid;
-		this.highestBuyer = new Buyer(item.highestBuyer);
+		this.highestBuyer = item.highestBuyer != null ? new Buyer(item.highestBuyer) : null;
+		this.image = item.image;
 	}
+
 
 	public String getUsername() {
 		return username;
@@ -112,7 +125,7 @@ public class Item {
 			return null;
 		}
 	}
-	public static byte[] getImage(){
+	public byte[] getImage(){
 		return image;
 	}
 }
