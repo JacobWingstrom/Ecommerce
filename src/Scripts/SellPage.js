@@ -14,7 +14,7 @@ function SellPageHeader() {
 
 async function listItem(data, token) {
     
-    const response = await fetch('http://localhost:8080/createListing', {
+    const response = await fetch('http://localhost:8080/api/item/createListing', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: data  
@@ -29,6 +29,7 @@ function SellPageBody() {
     const [description, setDescription] = useState('')
     const [price, setPrice] = useState('')
     const [image, setImage] = useState(null)
+    const [endDate, setEndDate] = useState('')
     const [error, setError] = useState('')
     
     const navigate = useNavigate();
@@ -39,14 +40,16 @@ function SellPageBody() {
         try{
             const data = new FormData();
             data.append('title', title);
-            data.append('price', price);
+            data.append('minimumPrice', price);
             data.append('description', description);
             data.append('image', image);
+            data.append('endDate', endDate);
             console.log(image)
             await listItem(data, token);
 
             navigate('/AccountPage')
         } catch {
+            console.log("kjgkgk")
             setError('Invalid Listing');
         }
     }
@@ -71,9 +74,14 @@ function SellPageBody() {
                     <p className="SellPage-Label">Image:</p>
                     <input type="file" accept="image/*" onChange={ e => setImage(e.target.files[0])} />
                 </label>
+                <label>
+                    <p className="SellPage-Label">End Date:</p>
+                    <input className="SellPage-Input" type="date" name="endDate" onChange={ e => setEndDate(e.target.value) } />
+                </label>
+
                 <br />
 
-                <input id="SellPage-Button" type="submit" value="List Item" disabled={!title || !description || !price || !image}/>
+                <input id="SellPage-Button" type="submit" value="List Item" disabled={!title || !description || !price || !image || !endDate}/>
             </form>
         </div>
     );

@@ -9,15 +9,7 @@ async function signInUser(credentials) {
   console.log(credentials.username)
   console.log(credentials.password)
 
-  await fetch('http://localhost:8080/api/auth/hello', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    credentials: 'include',
-    body: JSON.stringify(credentials)
-  });
-    const response = await fetch('http://localhost:8080/api/auth/login', {
+  const response = await fetch('http://localhost:8080/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

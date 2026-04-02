@@ -166,6 +166,36 @@ public class Database {
 	 * 
 	 */
 
+		/**
+	 * Retrieves an Account object from the database based on the provided username.
+	 * @param username - the username of the account to be retrieved
+	 * @return - an Account object containing the user's details if found, null otherwise
+	 * @throws SQLException
+	 */
+	public static Account getUserByToken(String token) throws SQLException {
+		token = token.trim(); // Trim whitespace
+		Connection con = getConnection();
+		if (con == null) {
+			return null;
+		}
+		String query = "SELECT user_id, username, password_hashed, salt, area, token FROM users WHERE token = ?";
+		try {
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setString(1, token);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					return new Account(rs.getString("username"), rs.getString("password_hashed"), rs.getString("salt"),rs.getString("area"), rs.getInt("user_id"), rs.getString("token"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			releaseConnection(con);
+		}
+		System.out.println("returning null");
+		return null;
+	}
+
 	/**
 	 * Retrieves an Account object from the database based on the provided username.
 	 * @param username - the username of the account to be retrieved
