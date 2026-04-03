@@ -334,7 +334,7 @@ public class Database {
 	public static List<Item> getUserItemsBought(int userId) {
 		List<Item> items = new ArrayList<>();
 		try (Connection con = getConnection()) {
-			String query = "SELECT * FROM items WHERE highest_bidder_id = ? AND sold = TRUE";
+			String query = "SELECT * FROM items WHERE highest_bidder_id = ? AND sold = TRUE ORDER BY end_time DESC";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
@@ -384,7 +384,7 @@ public class Database {
 	public static List<Item> getUserItemsSold(int userId) {
 		List<Item> items = new ArrayList<>();
 		try (Connection con = getConnection()) {
-			String query = "SELECT * FROM items WHERE seller_id = ? AND sold = TRUE";
+			String query = "SELECT * FROM items WHERE seller_id = ? AND sold = TRUE ORDER BY end_time DESC";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
@@ -465,7 +465,7 @@ public class Database {
 	public static Listing getStoreItems(int pageNumber){
 		try(Connection con = getConnection()){
 			int offset = (pageNumber - 1) * 20;
-			String query = "SELECT * FROM items LIMIT 20 OFFSET ?";
+			String query = "SELECT * FROM items LIMIT 20 OFFSET ? ORDER BY end_time DESC";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, offset);
 			ResultSet rs = stmt.executeQuery();
@@ -491,7 +491,7 @@ public class Database {
 	public static Listing getUserItemsOnMarket(int userId, int pageNumber){
 		try(Connection con = getConnection()){
 			int offset = (pageNumber - 1) * 20;
-			String query = "SELECT * FROM items WHERE seller_id = ? AND sold = false ORDER BY item_id LIMIT 20 OFFSET ?";
+			String query = "SELECT * FROM items WHERE seller_id = ? AND sold = false ORDER BY end_time DESC LIMIT 20 OFFSET ?";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, userId);
 			stmt.setInt(2, offset);
@@ -588,7 +588,7 @@ public class Database {
 				"JOIN bids b ON i.item_id = b.item_id AND b.bidder_id = ? " +
 				"WHERE i.sold = FALSE " +
 				"GROUP BY i.item_id, i.name, i.description, i.tag, i.curr_price, i.end_time, b.bid_id, b.amount, b.timestamp " +
-				"LIMIT ? OFFSET ?";
+				"LIMIT ? OFFSET ? ORDER BY i.end_time DESC";
 
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, userId);
