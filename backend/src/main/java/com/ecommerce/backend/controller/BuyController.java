@@ -1,32 +1,36 @@
 package com.ecommerce.backend.controller;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dto.AccountRequest;
+import dto.BidRequest;
 import dto.ItemRequest;
 import dto.ItemResponse;
 import dto.ListingResponce;
 import dto.UserListingRequest;
+import model.Account;
+import model.Bid;
 import model.Item;
 import model.ListType;
 import model.Listing;
+import service.AuthService;
 import service.BuyService;
 import service.UserService;
 
 @RestController
 @RequestMapping("/api/buy")
 public class BuyController {
-
-	// UserController -> get user info, update user name, update password, get items
-	// bought, get items sold, get availability, update availability
 
 	@PostMapping("/bids/active")
 	public ResponseEntity<?> getAuctions(@RequestBody UserListingRequest request) throws SQLException {
@@ -51,6 +55,43 @@ public class BuyController {
 		} else {
 			System.out.println("500");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cannot obtain listings");
+		}
+	}
+
+	@PostMapping("/placeBid")
+	public ResponseEntity<?> setBid(@RequestBody BidRequest request, @RequestHeader("Authorization") String authHeader)
+			throws SQLException {
+
+		try {
+			String token = authHeader.substring(7);
+
+			Account account = AuthService.getUserFromToken(token);
+			if (account == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+			}
+
+			int itemId = Integer.parseInt(request.getItemId());
+			BigDecimal bidAmount = new BigDecimal(request.getBid());
+
+			Item item = BuyService.getItemById(itemId);
+			if (item == null) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found");
+			}
+
+			Bid bid = new Bid(account.getUserID(), itemId, bidAmount, LocalDateTime.now());
+
+			Item updatedItem = BuyService.setBid(bid);
+
+			if (updatedItem != null) {
+				return ResponseEntity.ok(new ItemResponse(updatedItem));
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bid was not high enough");
+			}
+
+		} catch (NumberFormatException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid bid or itemId format");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error placing bid");
 		}
 	}
 }
