@@ -7,6 +7,7 @@ import MainPage from './MainPage.js';
 import SellPage from './SellPage.js';
 import BuyPage from './BuyPage.js';
 import AccountPage from './AccountPage.js'
+import ListingPage from './ListingPage.js';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/SellPage" element={<SellPage />} />
           <Route path="/BuyPage" element={<BuyPage />} />
           <Route path="/AccountPage" element={<AccountPage />} />
+          <Route path="/ListingPage/:item" element={<ListingPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Item {
 
 	private String username;
@@ -52,12 +54,18 @@ public class Item {
 	public Item(Item item) {
 		this.username = item.username;
 		this.description = item.description;
+		this.itemId = item.itemId;
 		this.tag = item.tag;
 		this.highestBid = item.highestBid;
 		this.highestBuyer = item.highestBuyer != null ? new Buyer(item.highestBuyer) : null;
 		this.image = item.image;
+		this.end_time = item.end_time;
 	}
 
+	@JsonIgnore
+	public Item getItem() {
+		return new Item(this);
+	}
 
 	public String getUsername() {
 		return username;

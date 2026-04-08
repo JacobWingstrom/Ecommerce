@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dto.AccountRequest;
+import dto.ItemRequest;
+import dto.ItemResponse;
 import dto.ListingResponce;
 import dto.UserListingRequest;
 import model.Item;
@@ -33,6 +35,19 @@ public class BuyController {
 		if (items != null) {
 			System.out.println("200");
 			return ResponseEntity.ok(new ListingResponce(items));
+		} else {
+			System.out.println("500");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cannot obtain listings");
+		}
+	}
+
+	@PostMapping("/bids/itemById")
+	public ResponseEntity<?> getItemById(@RequestBody ItemRequest request) throws SQLException {
+		Item item = BuyService.getItemById(request.getItemId());
+
+		if (item != null) {
+			System.out.println("200");
+			return ResponseEntity.ok(new ItemResponse(item));
 		} else {
 			System.out.println("500");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Cannot obtain listings");

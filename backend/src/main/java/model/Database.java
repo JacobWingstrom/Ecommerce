@@ -374,7 +374,7 @@ public class Database {
 
 		String tag = rs.getString("tag");
 
-		return new Item(name, description, tag, endTime, image);
+		return new Item(name, description, tag, itemId, currPrice, endTime, image);
 	}
 	/**
 	 * Retrieves a List of Item objects representing the items sold by the user with the specified user ID.
@@ -394,6 +394,29 @@ public class Database {
 			}
 			releaseConnection(con);
 			return items;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * Retrieves a List of Item objects representing the items sold by the user with the specified user ID.
+	 * @param userId - the ID of the user whose sold items are to be retrieved
+	 * @return a List of Item objects representing the items sold by the user or null if an error occurs.
+	 */
+	public static Item getItemByItemId(int userId) {
+		Item item = null;
+		try (Connection con = getConnection()) {
+			String query = "SELECT * FROM items WHERE item_id = ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				item = buildItem(rs);
+			}
+			releaseConnection(con);
+			return item;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -507,6 +530,7 @@ public class Database {
 		}
 		return null;
 	}
+
 	/**
 	 * Adds a new item to the database with the details provided in the Item object and associates it with
 	 * the specified seller ID. 

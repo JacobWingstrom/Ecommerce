@@ -22,7 +22,7 @@ public class ItemService {
 		Item item = null;
 
 		try {
-			item = new Item(title, description, null, BigDecimal.valueOf(Double.parseDouble(minimumPrice)), LocalDate.parse(endDate).atStartOfDay(), image.getBytes());
+			item = new Item(title, description, null, new BigDecimal(minimumPrice), LocalDate.parse(endDate).atStartOfDay(), image.getBytes());
 		} catch(IOException err) {
 			return false;
 		}

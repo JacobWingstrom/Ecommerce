@@ -22,4 +22,8 @@ public abstract class BuyService {
 		return Database.getStoreItems(pageNum).getItemListings();
 	}
 
+    public static Item getItemById(int itemId) throws SQLException {
+		return Database.getItemByItemId(itemId);
+	}
+
 }
