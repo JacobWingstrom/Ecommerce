@@ -5,46 +5,52 @@ import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Item {
 
 	private String username;
 	private String description;
 	private String tag;
 	private BigDecimal highestBid;
-	private Buyer highestBuyer;
+	private int highestBidderId;
 	private int itemId;
 	private LocalDateTime end_time;
 	private byte[] image;
+
 	public Item(String username, String description, String tag, LocalDateTime end_time, byte[] image) {
 		this.itemId = -1;
 		this.username = username;
 		this.description = description;
 		this.tag = tag;
-		this.highestBid = new BigDecimal(0.0);
-		this.highestBuyer = null;
+		this.highestBid = BigDecimal.ZERO;
+		this.highestBidderId = -1;
 		this.end_time = end_time;
 		this.image = image;
 
 	}
 
-	public Item(String username, String description, String tag, BigDecimal highestBid, LocalDateTime end_time, byte[] image) {
+	public Item(String username, String description, String tag, BigDecimal highestBid, LocalDateTime end_time,
+			byte[] image) {
 		this.itemId = -1;
 		this.username = username;
 		this.description = description;
 		this.tag = tag;
 		this.highestBid = highestBid;
-		this.highestBuyer = null;
+		this.highestBidderId = -1;
 		this.end_time = end_time;
 		this.image = image;
 
 	}
-	public Item(String username, String description, String tag, int itemId, BigDecimal highestBid, LocalDateTime end_time, byte[] image){
+
+	public Item(String username, String description, String tag, int itemId, BigDecimal highestBid,
+			LocalDateTime end_time, byte[] image) {
 		this.itemId = itemId;
 		this.username = username;
 		this.description = description;
 		this.tag = tag;
 		this.highestBid = highestBid;
-		this.highestBuyer = null;
+		this.highestBidderId = -1;
 		this.end_time = end_time;
 		this.image = image;
 	}
@@ -52,12 +58,18 @@ public class Item {
 	public Item(Item item) {
 		this.username = item.username;
 		this.description = item.description;
+		this.itemId = item.itemId;
 		this.tag = item.tag;
 		this.highestBid = item.highestBid;
-		this.highestBuyer = item.highestBuyer != null ? new Buyer(item.highestBuyer) : null;
+		this.highestBidderId = item.highestBidderId;
 		this.image = item.image;
+		this.end_time = item.end_time;
 	}
 
+	@JsonIgnore
+	public Item getItem() {
+		return new Item(this);
+	}
 
 	public String getUsername() {
 		return username;
@@ -95,24 +107,24 @@ public class Item {
 		this.highestBid = highestBid;
 	}
 
-	public Buyer getHighestBuyer() {
-		return highestBuyer;
+	public int getHighestBidderId() {
+		return highestBidderId;
 	}
 
-	public int getItemId(){
+	public int getItemId() {
 		return this.itemId;
 	}
 
 	// NEED TO UPDATE IN DB
-	public void setHighestBuyer(Buyer highestBuyer) {
-		// Deep Copy
-		this.highestBuyer = new Buyer(highestBuyer);
+	public void setHighestBidderId(int highestBidderId) {
+		this.highestBidderId = highestBidderId;
 	}
 
-	public LocalDateTime getEndTime(){
+	public LocalDateTime getEndTime() {
 		return this.end_time;
 	}
-	public static byte[] loadImage(String path){
+
+	public static byte[] loadImage(String path) {
 		try {
 			File file = new File(path);
 			byte[] data = new byte[(int) file.length()];
@@ -125,7 +137,8 @@ public class Item {
 			return null;
 		}
 	}
-	public byte[] getImage(){
+
+	public byte[] getImage() {
 		return image;
 	}
 }

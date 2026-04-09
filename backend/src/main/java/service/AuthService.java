@@ -20,20 +20,20 @@ public abstract class AuthService {
 		return false;
 	}
 
-	// FIX THIS METHOD, DONT KNOW WHAT TO DO WITH THE LISTS (BUYER/SELLER)
 	public static Account signInUser(String username, String password) throws SQLException {
 		Account acct = Database.authenticate(username, password);
 		if (acct == null) {
 			return null;
 		}
-		System.out.println(acct.getUsername() + " " + acct.getPassword());
+		return acct;
+	}
 
-//		List<Item> buyerBoughtList = Database.getUserItemsBought(0);
-//		List<Item> buyerBidList = Database.getUserItemsBought(0);
-//
-//		List<Item> sellerSoldList = Database.getUserItemsSold(0);
-//		List<Item> sellerSellingList = Database.getUserItemsSold(0);
+	public static Account getUserFromToken(String token) throws SQLException {
+		Account acct = Database.getUserByToken(token);
 
+		if (acct == null) {
+			return null;
+		}
 		return acct;
 	}
 

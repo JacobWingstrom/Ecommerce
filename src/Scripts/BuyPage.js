@@ -19,13 +19,14 @@ function Content() {
     async function handleFetch(token, user) {
         const response = await fetch(`http://localhost:8080/api/buy/bids/active`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-            username: user,
-            pageNum: 1
-        })
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                username: user,
+                pageNum: 1
+            })
         });
 
         if (!response.ok) throw new Error("Fetch failed");
@@ -41,7 +42,9 @@ function Content() {
     
     return (
         <div className="BuyPage-Content">
-            {<Listings data={ data }/>}
+            <div className="BuyPage-ContentPage">
+                {data && <Listings data={ data }/>}
+            </div>
         </div>
     )
 }

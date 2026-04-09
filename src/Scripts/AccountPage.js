@@ -55,7 +55,9 @@ function Content({ currentPage }) {
 
     return (
         <div className="AccountPage-Content">
-            {currentPage && <Listings data={ data }/>}
+            <div className="AccountPage-ContentPage">
+                {currentPage && <Listings data={ data }/>}
+            </div>
         </div>
     )
 }
