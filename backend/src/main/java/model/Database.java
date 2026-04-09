@@ -655,16 +655,44 @@ public class Database {
 	 */
 	public static void setBidOnItem(int bidId, BigDecimal amount){
 		try(Connection con = getConnection()){
-			String query = "UPDATE bids SET amount = ? WHERE bid_id = ?";
-			PreparedStatement stmt= con.prepareStatement(query);
-			stmt.setBigDecimal(1, amount);
-			stmt.setInt(2, bidId);
-			stmt.executeUpdate();
 
-		}catch(SQLException e){
+			// 1. Update the bid
+			String updateBid = "UPDATE bids SET amount = ? WHERE bid_id = ?";
+			PreparedStatement bidStmt = con.prepareStatement(updateBid);
+			bidStmt.setBigDecimal(1, amount);
+			bidStmt.setInt(2, bidId);
+			bidStmt.executeUpdate();
+
+			// 2. Get item_id
+			String getItem = "SELECT item_id FROM bids WHERE bid_id = ?";
+			PreparedStatement itemStmt = con.prepareStatement(getItem);
+			itemStmt.setInt(1, bidId);
+			ResultSet rs = itemStmt.executeQuery();
+
+			if(rs.next()){
+				int itemId = rs.getInt("item_id");
+
+				// 3. Update item with TRUE highest bid
+				String updateItem = 
+					"UPDATE items SET curr_price = (" +
+					"   SELECT MAX(amount) FROM bids WHERE item_id = ?" +
+					"), highest_bidder_id = (" +
+					"   SELECT bidder_id FROM bids " +
+					"   WHERE item_id = ? " +
+					"   ORDER BY amount DESC FETCH FIRST 1 ROW ONLY" +
+					") WHERE item_id = ?";
+
+				PreparedStatement updateStmt = con.prepareStatement(updateItem);
+				updateStmt.setInt(1, itemId);
+				updateStmt.setInt(2, itemId);
+				updateStmt.setInt(3, itemId);
+				updateStmt.executeUpdate();
+			}
+
+		} catch(SQLException e){
 			e.printStackTrace();
 		}
-	}
+}
 
 
 	/*
