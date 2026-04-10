@@ -33,13 +33,13 @@ public abstract class BuyService {
 
 		BigDecimal minimumBid = item.getHighestBid().add(BigDecimal.ONE);
 		if (bid.getAmount().compareTo(minimumBid) >= 0) {
-			Database.setBidOnItem(bid.getItemId(), bid.getAmount());
+			Database.addBidToDatabase(bid);
 			item.setHighestBid(bid.getAmount());
 			item.setHighestBidderId(bid.getBidderId());
+			Database.setBidAndHighestBidderToDatabase(item);
 			return item;
 		}
 
 		return null;
 	}
-
 }

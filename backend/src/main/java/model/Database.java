@@ -672,6 +672,19 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+
+	public static void setBidAndHighestBidderToDatabase(Item item) {
+		try(Connection con = getConnection()){
+			String updateItem = "UPDATE items SET curr_price = ?, highest_bidder_id = ? WHERE item_id = ?";
+			PreparedStatement itemStmt = con.prepareStatement(updateItem);
+			itemStmt.setBigDecimal(1, item.getHighestBid());
+			itemStmt.setInt(2, item.getHighestBidderId());
+			itemStmt.setInt(3, item.getItemId());
+			itemStmt.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * updates the current highest bid on an item in the database with the specified bid ID
 	 * and amount that the bid is being updated to.
