@@ -16,7 +16,7 @@ public abstract class BuyService {
 
 		if (acct == null)
 			return null;
-
+        System.out.println("Acct not null");
 		return Database.getStoreItems(pageNum).getItemListings();
 	}
 

@@ -488,7 +488,7 @@ public class Database {
 	public static Listing getStoreItems(int pageNumber){
 		try(Connection con = getConnection()){
 			int offset = (pageNumber - 1) * 20;
-			String query = "SELECT * FROM items LIMIT 20 OFFSET ? ORDER BY end_time DESC";
+			String query = "SELECT * FROM items ORDER BY end_time DESC LIMIT 20 OFFSET ?";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, offset);
 			ResultSet rs = stmt.executeQuery();
@@ -496,6 +496,7 @@ public class Database {
 			while(rs.next()){
 				Item item = buildItem(rs);
 				listing.addItem(item);
+				System.out.println("Row found: " + item.getUsername());
 			}
 			return listing;
 

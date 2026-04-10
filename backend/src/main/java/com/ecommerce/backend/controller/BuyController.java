@@ -67,6 +67,7 @@ public class BuyController {
 
 			Account account = AuthService.getUserFromToken(token);
 			if (account == null) {
+                System.out.println("acct is null");
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
 			}
 
@@ -75,6 +76,7 @@ public class BuyController {
 
 			Item item = BuyService.getItemById(itemId);
 			if (item == null) {
+                System.out.println("Item not found");
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found");
 			}
 
@@ -83,14 +85,19 @@ public class BuyController {
 			Item updatedItem = BuyService.setBid(bid);
 
 			if (updatedItem != null) {
-				return ResponseEntity.ok(new ItemResponse(updatedItem));
+                System.out.println("Item Updated");
+                System.out.println(updatedItem.getItemId() + " " + updatedItem.getHighestBid().toString());
+			    return ResponseEntity.ok(new ItemResponse(updatedItem));
 			} else {
+                System.out.println("Bid was not high enough");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bid was not high enough");
 			}
 
 		} catch (NumberFormatException e) {
+            System.out.println("Invalid bid or itemId format");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid bid or itemId format");
 		} catch (Exception e) {
+            System.out.println("Error placing bid");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error placing bid");
 		}
 	}
