@@ -17,6 +17,7 @@ public class Item {
 	private int itemId;
 	private LocalDateTime end_time;
 	private byte[] image;
+	private boolean sold;
 
 	public Item(String username, String description, String tag, LocalDateTime end_time, byte[] image) {
 		this.itemId = -1;
@@ -44,7 +45,7 @@ public class Item {
 	}
 
 	public Item(String username, String description, String tag, int itemId, BigDecimal highestBid,
-			LocalDateTime end_time, byte[] image) {
+			LocalDateTime end_time, byte[] image, boolean sold) {
 		this.itemId = itemId;
 		this.username = username;
 		this.description = description;
@@ -53,6 +54,7 @@ public class Item {
 		this.highestBidderId = -1;
 		this.end_time = end_time;
 		this.image = image;
+		this.sold = sold;
 	}
 
 	public Item(Item item) {
@@ -69,6 +71,10 @@ public class Item {
 	@JsonIgnore
 	public Item getItem() {
 		return new Item(this);
+	}
+
+	public boolean getSold() {
+		return sold;
 	}
 
 	public String getUsername() {

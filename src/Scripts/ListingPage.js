@@ -74,7 +74,7 @@ function ListingPageBody(){
 
     return (
         <div className="ListingPage-Body">
-            {data && 
+            {data && (data.sold ? <p>This auction has ended</p> :
                 <div>
                     <h1 id='username'>{data.username}</h1>
                     <img src={`data:image/jpeg;base64,${data.image}`} alt="Item"/>
@@ -83,7 +83,7 @@ function ListingPageBody(){
                     <p>{data.endTime}</p>
 
                     <ListingPageForm currentBid={ data.highestBid } itemId={ params.item } />                 
-                </div>
+                </div>)
             }
         </div>
     )

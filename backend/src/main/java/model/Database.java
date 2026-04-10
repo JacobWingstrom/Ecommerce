@@ -366,6 +366,7 @@ public class Database {
 		int sellerId = rs.getInt("seller_id");
 		Integer highestBidderId = rs.getInt("highest_bidder_id");
 		byte[] image = rs.getBytes("image");
+		boolean sold = rs.getBoolean("sold");
 		if (rs.wasNull()) {
     		highestBidderId = null;
 		}
@@ -374,7 +375,7 @@ public class Database {
 
 		String tag = rs.getString("tag");
 
-		return new Item(name, description, tag, itemId, currPrice, endTime, image);
+		return new Item(name, description, tag, itemId, currPrice, endTime, image, sold);
 	}
 	/**
 	 * Retrieves a List of Item objects representing the items sold by the user with the specified user ID.
@@ -632,7 +633,8 @@ public class Database {
 					rs.getInt("item_id"),
 					rs.getBigDecimal("curr_price"),
 					rs.getTimestamp("end_time").toLocalDateTime(),
-					rs.getBytes("image")
+					rs.getBytes("image"),
+					rs.getBoolean("sold")
 				);
 
 				// Build the user's Bid object
@@ -730,8 +732,17 @@ public class Database {
 		} catch(SQLException e){
 			e.printStackTrace();
 		}
-}
+	}
 
+	public static void setExpiredItemsSold(){
+		try(Connection con = getConnection()) {
+			String query = "UPDATE items SET sold = TRUE WHERE end_time <= NOW() AND sold = FALSE";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.executeUpdate();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/*
 	LIST OF ALL ADMIN-RELATED METHODS 
