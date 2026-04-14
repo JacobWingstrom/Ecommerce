@@ -366,6 +366,7 @@ public class Database {
 		int sellerId = rs.getInt("seller_id");
 		Integer highestBidderId = rs.getInt("highest_bidder_id");
 		byte[] image = rs.getBytes("image");
+		boolean sold = rs.getBoolean("sold");
 		if (rs.wasNull()) {
     		highestBidderId = null;
 		}
@@ -374,7 +375,7 @@ public class Database {
 
 		String tag = rs.getString("tag");
 
-		return new Item(name, description, tag, itemId, currPrice, endTime, image);
+		return new Item(name, description, tag, itemId, currPrice, endTime, image, sold);
 	}
 	/**
 	 * Retrieves a List of Item objects representing the items sold by the user with the specified user ID.
@@ -488,7 +489,7 @@ public class Database {
 	public static Listing getStoreItems(int pageNumber){
 		try(Connection con = getConnection()){
 			int offset = (pageNumber - 1) * 20;
-			String query = "SELECT * FROM items LIMIT 20 OFFSET ? ORDER BY end_time DESC";
+			String query = "SELECT * FROM items ORDER BY end_time DESC LIMIT 20 OFFSET ?";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, offset);
 			ResultSet rs = stmt.executeQuery();
@@ -496,6 +497,7 @@ public class Database {
 			while(rs.next()){
 				Item item = buildItem(rs);
 				listing.addItem(item);
+				System.out.println("Row found: " + item.getUsername());
 			}
 			return listing;
 
@@ -631,7 +633,8 @@ public class Database {
 					rs.getInt("item_id"),
 					rs.getBigDecimal("curr_price"),
 					rs.getTimestamp("end_time").toLocalDateTime(),
-					rs.getBytes("image")
+					rs.getBytes("image"),
+					rs.getBoolean("sold")
 				);
 
 				// Build the user's Bid object
@@ -667,6 +670,19 @@ public class Database {
 			stmt.setInt(2, bid.getItemId());
 			stmt.setBigDecimal(3, bid.getAmount());
 			stmt.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+	public static void setBidAndHighestBidderToDatabase(Item item) {
+		try(Connection con = getConnection()){
+			String updateItem = "UPDATE items SET curr_price = ?, highest_bidder_id = ? WHERE item_id = ?";
+			PreparedStatement itemStmt = con.prepareStatement(updateItem);
+			itemStmt.setBigDecimal(1, item.getHighestBid());
+			itemStmt.setInt(2, item.getHighestBidderId());
+			itemStmt.setInt(3, item.getItemId());
+			itemStmt.executeUpdate();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -716,8 +732,17 @@ public class Database {
 		} catch(SQLException e){
 			e.printStackTrace();
 		}
-}
+	}
 
+	public static void setExpiredItemsSold(){
+		try(Connection con = getConnection()) {
+			String query = "UPDATE items SET sold = TRUE WHERE end_time <= NOW() AND sold = FALSE";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.executeUpdate();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/*
 	LIST OF ALL ADMIN-RELATED METHODS 

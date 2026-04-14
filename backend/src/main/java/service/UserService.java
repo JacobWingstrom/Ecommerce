@@ -2,12 +2,10 @@ package service;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import model.Account;
 import model.Database;
 import model.Item;
 import model.ListType;
-import model.Listing;
 
 public abstract class UserService {
 

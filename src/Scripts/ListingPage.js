@@ -7,8 +7,8 @@ import { useAuth } from '../Context/AuthContext.js'
 async function listItem(data, token) {
     const response = await fetch('http://localhost:8080/api/buy/placeBid', {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: data  
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)  
     });
 
     if (!response.ok) throw new Error("Listing Failed");
@@ -23,14 +23,16 @@ function ListingPageForm({ currentBid, itemId }){
     const handleSubmit = async e => {
         e.preventDefault()
         try{
-            const data = new FormData();
-            data.append('ItemId', itemId)
-            data.append('Bid', bid);
+            const data = {
+                itemId: itemId,
+                bid: bid
+            }
 
-            await listItem(data, token);
-
+            const x = await listItem(data, token);
+            console.log(x.item.itemId + " " + x.item.highestBid)
             window.location.reload()
         } catch {
+            console.log("asdfsd")
             setError('Invalid Bid');
         }
     }
@@ -72,7 +74,7 @@ function ListingPageBody(){
 
     return (
         <div className="ListingPage-Body">
-            {data && 
+            {data && (data.sold ? <p>This auction has ended</p> :
                 <div>
                     <h1 id='username'>{data.username}</h1>
                     <img src={`data:image/jpeg;base64,${data.image}`} alt="Item"/>
@@ -81,7 +83,7 @@ function ListingPageBody(){
                     <p>{data.endTime}</p>
 
                     <ListingPageForm currentBid={ data.highestBid } itemId={ params.item } />                 
-                </div>
+                </div>)
             }
         </div>
     )
