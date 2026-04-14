@@ -9,19 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import dto.AvailibiltyRequest;
 import dto.AvailibiltyResponse;
+import model.Availability;
+import service.AvailibiltyService;
 
 @RestController
 @RequestMapping("/api/availibilty")
 public class AvailabilityController {
 
 	@PostMapping("/updateAvailibilty")
-	public ResponseEntity<?> updateAvailibilty(@RequestBody AvailibiltyRequest request) throws SQLException {
+	public ResponseEntity<?> updateAvailability(@RequestBody AvailibiltyRequest request) throws SQLException {
 
-		// Something something = AvailibiltyService.something(request.something);
+		boolean updateSuccessful = AvailibiltyService.updateAvailibilty(request.getToken(), request.getAvailibilty());
 
-		if (false) {
+		Availability availability = AvailibiltyService.getAvailability(request.getToken());
+
+		if (updateSuccessful) {
 			System.out.println("200");
-			return ResponseEntity.ok(new AvailibiltyResponse());
+			return ResponseEntity.ok(new AvailibiltyResponse(request.getToken(), availability));
 		} else {
 			System.out.println("500");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid User Availibilty Request");
@@ -29,11 +33,13 @@ public class AvailabilityController {
 	}
 
 	@PostMapping("/getAvailibility")
-	public ResponseEntity<?> getAvailibility(@RequestBody AvailibiltyRequest request) throws SQLException {
+	public ResponseEntity<?> getAvailability(@RequestBody AvailibiltyRequest request) throws SQLException {
+
+		Availability availability = AvailibiltyService.getAvailability(request.getToken());
 
 		if (false) {
 			System.out.println("200");
-			return ResponseEntity.ok(new AvailibiltyResponse());
+			return ResponseEntity.ok(new AvailibiltyResponse(request.getToken(), availability));
 		} else {
 			System.out.println("500");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid User Availibilty Request");
