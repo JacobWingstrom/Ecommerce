@@ -1,12 +1,9 @@
 package dto;
 
-import java.util.ArrayList;
-
 import model.Item;
-import model.Listing;
 
 public class ItemResponse {
-    private Item item;
+	private Item item;
 
 	public ItemResponse(Item item) {
 		this.item = item;

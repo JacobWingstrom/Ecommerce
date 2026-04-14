@@ -1,11 +1,7 @@
 package model;
 
-import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.Map;
-
 import service.JWTTokenGenerator;
 import service.PasswordHasher;
 

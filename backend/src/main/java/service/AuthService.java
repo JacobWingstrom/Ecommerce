@@ -1,12 +1,8 @@
 package service;
 
 import java.sql.SQLException;
-import java.util.List;
-
 import model.Account;
-import model.Buyer;
 import model.Database;
-import model.Item;
 
 public abstract class AuthService {
 
