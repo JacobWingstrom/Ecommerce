@@ -744,6 +744,29 @@ public class Database {
 		}
 	}
 
+	//Methods for availability: insertinb a block, getting blocks for a user, deleting a block, overlap query
+	public static void updateAvailablity(int userId, Availability blocks){
+		try(Connection con  = getConnection()){
+			String deleteStatement = "DELETE FROM availablity WHERE user_id = ?";
+			PreparedStatement deleteStmt = con.prepareStatement(deleteStatement);
+			deleteStmt.setInt(1, userId);
+			deleteStmt.executeUpdate();
+			String insertStatement = "INSERT INTO availability (user_id, date, start_time, end_time) VALUES (?, ?, ?, ?)";
+			PreparedStatement insertStmt = con.prepareStatement(insertStatement);
+			for(AvailabilityBlock block : blocks.getBlocks()){
+				insertStmt.setInt(1, userId);
+				insertStmt.setDate(2, java.sql.Date.valueOf(block.getDate()));
+				insertStmt.setTime(3, java.sql.Time.valueOf(block.getStart()));
+				insertStmt.setTime(4, java.sql.Time.valueOf(block.getEnd()));
+				insertStmt.addBatch();
+			}
+			insertStmt.executeBatch();
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
 	/*
 	LIST OF ALL ADMIN-RELATED METHODS 
 
