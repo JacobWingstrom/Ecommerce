@@ -1,7 +1,5 @@
 package model;
 
-import java.time.LocalDate;
-import java.util.Map;
 import service.JWTTokenGenerator;
 import service.PasswordHasher;
 
@@ -12,7 +10,7 @@ public class Account {
 	private String salt;
 	private String area;
 	private int userId;
-	private Availabilty availabilty;
+	private Availability availability;
 	private String token;
 
 	public Account(String username, String password) {
@@ -93,8 +91,8 @@ public class Account {
 		this.userId = newId;
 	}
 
-	public Map<LocalDate, AvailabiltyBlock> getAvailabilty() {
-		return availabilty.getAvailableTimes();
+	public Availability getAvailability(){
+		return this.availability;
 	}
 
 }
