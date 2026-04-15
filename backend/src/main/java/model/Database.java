@@ -8,7 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -766,7 +768,62 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-	
+	public static Availability getUserAvailability(int userId){
+		try(Connection con = getConnection()){
+			String query = "SELECT date, start_time, end_time FROM availability WHERE user_id = ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+			Availability availability = new Availability();
+			while(rs.next()){
+				AvailabilityBlock block = new AvailabilityBlock(
+					rs.getTime("start_time").toLocalTime(),
+					rs.getTime("end_time").toLocalTime(),
+					rs.getDate("date").toLocalDate(),
+					rs.getInt("block_id"),
+					rs.getInt("user_id")
+				);
+				availability.addBlock(block);
+			}
+			return availability;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static List<Timeslot> getOverlap(int userA, int userB){
+		List<Timeslot> overlaps = new ArrayList<>();
+		String sql = "SELECT \r\n" + //
+						"    a1.date,\r\n" + //
+						"    GREATEST(a1.start_time, a2.start_time) AS overlap_start,\r\n" + //
+						"    LEAST(a1.end_time, a2.end_time) AS overlap_end\r\n" + //
+						"FROM availability a1\r\n" + //
+						"JOIN availability a2\r\n" + //
+						"  ON a1.date = a2.date\r\n" + //
+						"WHERE a1.user_id = ?\r\n" + //
+						"  AND a2.user_id = ?\r\n" + //
+						"  AND a1.start_time < a2.end_time\r\n" + //
+						"  AND a2.start_time < a1.end_time\r\n" + //
+						"ORDER BY a1.date, overlap_start;";
+		try(Connection con = getConnection()){
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, userA);
+			stmt.setInt(2, userB);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				LocalDate date = rs.getDate("data").toLocalDate();
+				LocalTime startTime = rs.getTime("overlap_start").toLocalTime();
+				LocalTime endTime = rs.getTime("overlap_end").toLocalTime();
+				LocalDateTime start = LocalDateTime.of(date, startTime);
+				LocalDateTime end = LocalDateTime.of(date, endTime);
+				overlaps.add(new Timeslot(start, end));
+			}
+			return overlaps;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 	/*
 	LIST OF ALL ADMIN-RELATED METHODS 
 

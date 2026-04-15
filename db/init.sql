@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS availability (
     user_id INT NOT NULL,
     start_time TIME,
     end_time TIME,
-    day VARCHAR(20),
+    date DATE,
 
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
