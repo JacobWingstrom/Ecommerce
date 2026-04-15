@@ -747,7 +747,7 @@ public class Database {
 	}
 
 	//Methods for availability: insertinb a block, getting blocks for a user, deleting a block, overlap query
-	public static void updateAvailablity(int userId, Availability blocks){
+	public static boolean updateAvailablity(int userId, Availability blocks){
 		try(Connection con  = getConnection()){
 			String deleteStatement = "DELETE FROM availablity WHERE user_id = ?";
 			PreparedStatement deleteStmt = con.prepareStatement(deleteStatement);
@@ -763,10 +763,12 @@ public class Database {
 				insertStmt.addBatch();
 			}
 			insertStmt.executeBatch();
+			return true;
 
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+		return false;
 	}
 	public static Availability getUserAvailability(int userId){
 		try(Connection con = getConnection()){
