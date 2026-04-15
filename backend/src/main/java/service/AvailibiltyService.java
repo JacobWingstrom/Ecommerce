@@ -3,7 +3,6 @@ package service;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import model.Account;
 import model.Availability;
 import model.AvailabilityBlock;
 import model.Database;
@@ -40,19 +39,13 @@ public class AvailibiltyService {
 			day = day.plusDays(1); // must reassign
 		}
 
-		// NEED TO CHECK IF THIS IS UPDATED
-		Database.updateAvailablity(userId, ava);
-
-		// NEED A METHOD IN DB TO GET Availability AND COMPARE BEFORE AND AFTER MAKING
-		// CHANGES
-		// CHECK TO SEE IF IT WAS NULL AND IS UPDATED -> TRUE
-		// CHECK TO SEE IF THERE WAS ONE AND A NEW ONE -> TRUE
-		// ELSE RETURN FALSE
-		return true;
+		return Database.updateAvailablity(userId, ava);
 	}
 
-	public static Availability getAvailability(String token) {
-		return null;
-	}
+	public static Availability getAvailability(String token) throws SQLException {
 
+		int userId = Database.getUserByToken(token).getUserID();
+
+		return Database.getUserAvailability(userId);
+	}
 }

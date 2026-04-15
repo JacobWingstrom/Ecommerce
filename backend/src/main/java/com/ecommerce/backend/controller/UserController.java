@@ -9,13 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import dto.AccountRequest;
 import dto.ListingResponce;
 import dto.UserListingRequest;
 import model.Item;
 import model.ListType;
-import model.Listing;
 import service.UserService;
 
 @RestController
@@ -27,7 +24,8 @@ public class UserController {
 
 	@PostMapping("/Bids/Current")
 	public ResponseEntity<?> currentBids(@RequestBody UserListingRequest request) throws SQLException {
-		List<Item> items = UserService.getListingType(request.getUsername(), ListType.CurrentBidItems, request.getPageNum());
+		List<Item> items = UserService.getListingType(request.getUsername(), ListType.CurrentBidItems,
+				request.getPageNum());
 
 		if (items != null) {
 			System.out.println("200");
@@ -40,7 +38,8 @@ public class UserController {
 
 	@PostMapping("/Selling/Current")
 	public ResponseEntity<?> currentSelling(@RequestBody UserListingRequest request) throws SQLException {
-		List<Item> items = UserService.getListingType(request.getUsername(), ListType.CurrentItemsOnMarket, request.getPageNum());
+		List<Item> items = UserService.getListingType(request.getUsername(), ListType.CurrentItemsOnMarket,
+				request.getPageNum());
 
 		if (items != null) {
 			System.out.println("200");
@@ -53,7 +52,8 @@ public class UserController {
 
 	@PostMapping("/Bids/Won")
 	public ResponseEntity<?> itemsWon(@RequestBody UserListingRequest request) throws SQLException {
-		List<Item> items = UserService.getListingType(request.getUsername(), ListType.AllItemsWon, request.getPageNum());
+		List<Item> items = UserService.getListingType(request.getUsername(), ListType.AllItemsWon,
+				request.getPageNum());
 
 		if (items != null) {
 			System.out.println("200");
