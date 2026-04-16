@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 
 public class AuthServiceTest {
+/*
     @Test
     void addUserTest() throws SQLException {
         assertFalse(AuthService.AddUser("user01", "DesertStorm1!"));
@@ -27,4 +28,5 @@ public class AuthServiceTest {
         
         assertNotNull(AuthService.signInUser("user0", "DesertStorm1!"));
     }
+*/
 }

@@ -39,7 +39,7 @@ public abstract class BuyService {
 			Database.setBidAndHighestBidderToDatabase(item);
 			return item;
 		}
-
+		AuctionHandler.closeExpiredAuctions();
 		return null;
 	}
 }

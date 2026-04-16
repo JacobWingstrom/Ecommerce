@@ -14,15 +14,14 @@ public abstract class UserService {
 		Account acct = Database.getUserByUsername(username);
 
 		if (type == ListType.CurrentBidItems) {
-			// LANE MAKE METHOD TO GET ALL USERS current items they're bidding on
-//			return DataBase.
-			// UPDATE NAME
+			AuctionHandler.closeExpiredAuctions();
+			return Database.getUserItemsBidOn(acct.getUserID(), pageNum).getItemListings();
 		} else if (type == ListType.CurrentItemsOnMarket) {
 			return Database.getUserItemsOnMarket(acct.getUserID(), pageNum).getItemListings();
 		} else if (type == ListType.AllItemsWon) {
+			AuctionHandler.closeExpiredAuctions();
 			return Database.getUserItemsBought(acct.getUserID());
 		}
 		return null;
 	}
-
 }

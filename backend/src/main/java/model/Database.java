@@ -491,7 +491,7 @@ public class Database {
 	public static Listing getStoreItems(int pageNumber){
 		try(Connection con = getConnection()){
 			int offset = (pageNumber - 1) * 20;
-			String query = "SELECT * FROM items ORDER BY end_time DESC LIMIT 20 OFFSET ?";
+			String query = "SELECT * FROM items WHERE sold = FALSE ORDER BY end_time DESC LIMIT 20 OFFSET ?";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, offset);
 			ResultSet rs = stmt.executeQuery();
@@ -499,7 +499,7 @@ public class Database {
 			while(rs.next()){
 				Item item = buildItem(rs);
 				listing.addItem(item);
-				System.out.println("Row found: " + item.getUsername());
+				System.out.println("Row found: " + item.getUsername() + ' ' + item.getEndTime().toString());
 			}
 			return listing;
 
@@ -604,19 +604,19 @@ public class Database {
 	 * @param pageNumber - the page number for which to retrieve the user's bid items (the nth 20 items)
 	 * @return an ArrayList of UserBidItem objects representing the items that the user has placed bids on
 	 */
-	public static ArrayList<UserBidItem> getUserItemsBidOn(int userId, int pageNumber){
+	public static Listing getUserItemsBidOn(int userId, int pageNumber){
 		int pageSize = 20;
 		int offset = (pageNumber - 1) * pageSize;
 
 		try (Connection con = getConnection()) {
 			String query =
-				"SELECT i.item_id, i.name, i.description, i.tag, i.curr_price AS current_highest_bid, i.end_time, " +
+				"SELECT i.item_id, i.name, i.description, i.tag, i.curr_price, i.image, i.sold, i.end_time, " +
 				"b.bid_id AS user_bid_id, b.amount AS user_bid_amount, b.timestamp AS user_bid_time " +
 				"FROM items i " +
 				"JOIN bids b ON i.item_id = b.item_id AND b.bidder_id = ? " +
 				"WHERE i.sold = FALSE " +
 				"GROUP BY i.item_id, i.name, i.description, i.tag, i.curr_price, i.end_time, b.bid_id, b.amount, b.timestamp " +
-				"LIMIT ? OFFSET ? ORDER BY i.end_time DESC";
+				"ORDER BY i.end_time DESC LIMIT ? OFFSET ?";
 
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, userId);
@@ -624,7 +624,7 @@ public class Database {
 			stmt.setInt(3, offset);
 
 			ResultSet rs = stmt.executeQuery();
-			ArrayList<UserBidItem> listing = new ArrayList<>();
+			Listing listing = new Listing();
 
 			while (rs.next()) {
 				// Build the Item object
@@ -639,17 +639,8 @@ public class Database {
 					rs.getBoolean("sold")
 				);
 
-				// Build the user's Bid object
-				Bid userBid = new Bid(
-					rs.getInt("user_bid_id"),
-					userId,
-					rs.getInt("item_id"),
-					rs.getBigDecimal("user_bid_amount"),
-					rs.getTimestamp("user_bid_time").toLocalDateTime()
-				);
-
 				// Wrap in a composite object if Listing is designed for that
-				listing.add(new UserBidItem(item, userBid));  // or listing.addItem(new UserBidItem(item, userBid));
+				listing.addItem(item);  // or listing.addItem(new UserBidItem(item, userBid));
 			}
 
 			return listing;

@@ -28,7 +28,6 @@ public class ItemService {
 		}
 
 		Database.addItem(item, acct.getUserID());
-
 		return true;
 	}
 }

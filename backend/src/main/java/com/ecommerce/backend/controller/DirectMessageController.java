@@ -11,9 +11,13 @@ import dto.DirectMessageRequest;
 import dto.DirectMessageResponse;
 
 @RestController
-@RequestMapping("/api/availibilty")
+@RequestMapping("/api/directMessage")
 public class DirectMessageController {
 
+	/*
+		/allMessages : need to return all conversations that the user currently has
+		
+	*/
 	@PostMapping("/getAvailibility")
 	public ResponseEntity<?> getAvailibility(@RequestBody DirectMessageRequest request) throws SQLException {
 

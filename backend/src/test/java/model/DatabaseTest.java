@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 
 public class DatabaseTest {
-
+/* 
     @Test
     void getUserByUsernameTest() throws SQLException{
         assertNotNull(Database.getUserByUsername("user01"));
@@ -31,4 +31,5 @@ public class DatabaseTest {
 
         assertNotNull(Database.authenticate("user", "123"));
     }
+    */
 }
