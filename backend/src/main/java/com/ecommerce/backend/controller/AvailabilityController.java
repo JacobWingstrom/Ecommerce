@@ -37,12 +37,12 @@ public class AvailabilityController {
 
 		Availability availability = AvailibiltyService.getAvailability(request.getToken());
 
-		if (false) {
-			System.out.println("200");
-			return ResponseEntity.ok(new AvailibiltyResponse(request.getToken(), availability));
-		} else {
+		if (availability == null) {
 			System.out.println("500");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid User Availibilty Request");
+		} else {
+			System.out.println("200");
+			return ResponseEntity.ok(new AvailibiltyResponse(request.getToken(), availability));
 		}
 	}
 
