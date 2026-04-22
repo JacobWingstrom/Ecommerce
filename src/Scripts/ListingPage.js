@@ -3,6 +3,7 @@ import Header from "./Header"
 import { useParams } from "react-router-dom"
 import '../Sheets/ListingPage.css'
 import { useAuth } from '../Context/AuthContext.js'
+import { timeLeft } from './Listings.js'
 
 async function listItem(data, token) {
     const response = await fetch('http://localhost:8080/api/buy/placeBid', {
@@ -37,12 +38,13 @@ function ListingPageForm({ currentBid, itemId }){
         }
     }
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="ListingPage-form" onSubmit={handleSubmit}>
+            {error && <p id="ListingPage-error" style={{color: 'red'}}>{error}</p>}
             <label>
-                <p>Bid: </p>
-                <input type='number' name='bid' placeholder={"Minimum of " + (currentBid+1)} onChange={ e => setBid(e.target.value) }/>
+                <p className="ListingPage-Label">Bid:</p>
+                <input className="ListingPage-Input" type='number' name='bid' placeholder={"Minimum of " + (currentBid + 1)} onChange={ e => setBid(e.target.value) }/>
             </label>
-            <button type="submit">Submit Bid</button>
+            <input id="ListingPage-Button" type="submit" value="Submit Bid" disabled={!bid || bid <= currentBid} />
         </form>
     )
 }
@@ -74,15 +76,14 @@ function ListingPageBody(){
 
     return (
         <div className="ListingPage-Body">
-            {data && (data.sold ? <p>This auction has ended</p> :
-                <div>
-                    <h1 id='username'>{data.username}</h1>
-                    <img src={`data:image/jpeg;base64,${data.image}`} alt="Item"/>
-                    <p>{data.description}</p>
-                    <p>{data.highestBid}</p>
-                    <p>{data.endTime}</p>
-
-                    <ListingPageForm currentBid={ data.highestBid } itemId={ params.item } />                 
+            {data && (data.sold ? <p className="ListingPage-ended">This auction has ended</p> :
+                <div id="ListingPage-Body-Data">
+                    <h1 id='ListingPage-Body-Title'>{data.username}</h1>
+                    <img id='ListingPage-Body-Image' src={`data:image/jpeg;base64,${data.image}`} alt="Item"/>
+                    <p id='ListingPage-Body-Description'>Description: {data.description}</p>
+                    <p id='ListingPage-Body-Time'>Ends In: {timeLeft(data.endTime)}</p>
+                    <p id='ListingPage-Body-Price'>Current Highest Bid: ${data.highestBid}</p>
+                    <ListingPageForm currentBid={ data.highestBid } itemId={ params.item } />
                 </div>)
             }
         </div>

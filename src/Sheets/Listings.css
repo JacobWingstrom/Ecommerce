@@ -1,0 +1,18 @@
+.Listings-content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    background-color: whitesmoke;
+    border: 3px solid black;
+    box-shadow: 6px 6px 0px black;
+    overflow: hidden;
+    margin: 0 auto 10px auto;
+}
+
+.Listings-content-image {
+    margin-top: 10px;
+    max-width: 300px;
+}
+
+

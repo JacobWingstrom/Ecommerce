@@ -16,7 +16,7 @@ public class DirectMessageController {
 
 	/*
 		/allMessages : need to return all conversations that the user currently has
-		
+		/getMessageById 
 	*/
 	@PostMapping("/getAvailibility")
 	public ResponseEntity<?> getAvailibility(@RequestBody DirectMessageRequest request) throws SQLException {

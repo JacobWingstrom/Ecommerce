@@ -19,7 +19,7 @@ function MessagesPageBody() {
 
     useEffect(() => {
         fetch('/api/messages/allMessages', {
-            method: 'GET',
+            method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         })
             .then(data => data.json())
