@@ -817,6 +817,87 @@ public class Database {
 		}
 		return null;
 	}
+
+	public static void addConversation(){
+		try(Connection con = getConnection()){
+			String query = "INSERT INTO conversations () VALUES ()";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+	public static void addParticipant(int conversationId, int userId){
+		try(Connection con = getConnection()){
+			String query = "INSERT INTO conversation_participants (conversation_id, user_id) " +
+				"VALUES (?, ?)";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, conversationId);
+			stmt.setInt(2, userId);
+			stmt.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+	public static void addMessage(MessageDTO message){
+		try(Connection con = getConnection()){
+			String query = "INSERT INTO messages (conversation_id, sender_id, content, timestamp) "
+			+ "VALUES (?, ?, ?, ?)";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, message.getConversation_id());
+			stmt.setInt(2, message.getSender_id());
+			stmt.setString(3, message.getContent());
+			stmt.setTimestamp(4, Timestamp.valueOf(message.getTimestamp()));
+			stmt.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+	public static Conversation getConversation(int conversationId){
+		try(Connection con = getConnection()){
+			Conversation conversation = new Conversation(conversationId);
+			String query = "SELECT * FROM messages WHERE conversation_id = ? ORDER BY timestamp ASC, message_id ASC";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, conversationId);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				int conversationIdResult = rs.getInt("conversation_id");
+				int senderId = rs.getInt("sender_id");
+				String content = rs.getString("content");
+				LocalDateTime timestamp = rs.getTimestamp("timestamp").toLocalDateTime();
+				MessageDTO message = new MessageDTO(conversationIdResult, senderId, content, timestamp);
+				conversation.addMessage(message);
+
+			}
+			return conversation;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static List<Integer> getUserConversations(int userId){
+		try(Connection con = getConnection()){
+			String query = "SELECT conversation_id FROM conversation_participants WHERE user_id = ?";
+			PreparedStatement stmt = con.prepareStatement(query);
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+			List<Integer> conversationIds = new ArrayList<>();
+			while(rs.next()){
+				conversationIds.add(rs.getInt("conversation_id"));
+			}
+			return conversationIds;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+
 	/*
 	LIST OF ALL ADMIN-RELATED METHODS 
 
