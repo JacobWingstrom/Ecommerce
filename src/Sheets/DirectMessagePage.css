@@ -1,22 +1,38 @@
 .DirectMessagePage {
     position: fixed;
     top: 50px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: 100vh;
     background-color: #f9a916;
-    overflow: hidden;
+}
+
+#DirectMessagePage-Header {
+    background-color: #f9a916;
+    width: 100%;
+    padding-left: 25px;
+    border-bottom: black 2px solid;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+#DirectMessagePage-Header h1 {
+    font-size: 24px;
+    color: rgb(46, 46, 46);
+}
+
+#DirectMessagePage-Header span {
+    font-size: 14px;
+    color: rgb(90, 90, 90);
 }
 
 .DirectMessagePage-Body {
     display: flex;
-    height: 100%;
+    height: calc(100% - 60px);
     gap: 16px;
     padding: 16px;
     box-sizing: border-box;
 }
-
-/* ── Messages Panel ── */
 
 .DirectMessagePage-messages {
     display: flex;
@@ -27,28 +43,6 @@
     border: 3px solid black;
     box-shadow: 6px 6px 0px black;
     overflow: hidden;
-}
-
-.DirectMessagePage-messages-panel-header {
-    background-color: whitesmoke;
-    border-bottom: 2px solid black;
-    padding: 10px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.DirectMessagePage-messages-other-user {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: rgb(46, 46, 46);
-}
-
-.DirectMessagePage-messages-item-name {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    color: rgb(90, 90, 90);
 }
 
 .DirectMessagePage-messages-list {
@@ -64,7 +58,6 @@
     max-width: 75%;
     padding: 8px 12px;
     border: 2px solid black;
-    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
 }
 
@@ -85,7 +78,6 @@
 }
 
 .DirectMessagePage-messages-bubble-time {
-    font-family: 'DM Sans', sans-serif;
     font-size: 11px;
     opacity: 0.6;
     display: block;
@@ -102,23 +94,18 @@
 
 .DirectMessagePage-messages-input {
     flex: 1;
-    padding: 8px 12px;
-    font-family: 'DM Sans', sans-serif;
+    padding: 10px 14px;
     font-size: 14px;
     border: 2px solid black;
+    border-radius: 3px;
     background-color: white;
     outline: none;
-}
-
-.DirectMessagePage-messages-input:focus {
-    border-color: #2e9e5e;
 }
 
 .DirectMessagePage-messages-send-btn {
     padding: 8px 18px;
     background-color: #f9a916;
     color: black;
-    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 500;
     border: 1px solid black;
@@ -129,8 +116,6 @@
 .DirectMessagePage-messages-send-btn:hover {
     background-color: #d69111;
 }
-
-/* ── Availability Panel ── */
 
 .DirectMessagePage-availiblity {
     flex: 1;
@@ -154,13 +139,11 @@
 }
 
 .DirectMessagePage-availiblity-title h3 {
-    font-family: 'Playfair Display', serif;
     font-size: 20px;
     color: rgb(46, 46, 46);
 }
 
 .DirectMessagePage-availiblity-suggestion {
-    font-family: 'DM Sans', sans-serif;
     font-size: 13px;
     font-weight: 500;
     color: rgb(90, 90, 90);
@@ -170,53 +153,32 @@
     display: flex;
     gap: 10px;
     margin-bottom: 12px;
-    flex-wrap: wrap;
 }
 
 .DirectMessagePage-availiblity-this,
 .DirectMessagePage-availiblity-other,
 .DirectMessagePage-availiblity-overlap {
-    font-family: 'DM Sans', sans-serif;
     font-size: 12px;
     font-weight: 500;
     padding: 3px 10px;
     border: 1px solid black;
     border-radius: 5px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background-color: white;
 }
-
-.DirectMessagePage-availiblity-this::before,
-.DirectMessagePage-availiblity-other::before,
-.DirectMessagePage-availiblity-overlap::before {
-    content: '';
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 1px solid black;
-    border-radius: 2px;
-    flex-shrink: 0;
-}
-
-.DirectMessagePage-availiblity-this::before   { background-color: #2e9e5e; }
-.DirectMessagePage-availiblity-other::before   { background-color: #f9a916; }
-.DirectMessagePage-availiblity-overlap::before { background-color: #1a6b40; }
 
 .DirectMessagePage-availiblity-grid-wrapper {
     flex: 1;
     overflow: auto;
-    border: 2px solid black;
-    border-radius: 5px;
+    border: 3px solid black;
+    border-radius: 10px;
     box-shadow: 0 1px 10px rgb(46, 46, 46);
+    height: 100%;
 }
 
 .DirectMessagePage-availiblity-grid {
-    display: grid;
-    border-left: 1px solid #999;
-    border-top: 1px solid #999;
-    min-width: max-content;
+    border-collapse: collapse;
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
 }
 
 .DirectMessagePage-availiblity-grid-corner {
@@ -226,7 +188,6 @@
 }
 
 .DirectMessagePage-availiblity-grid-col-header {
-    font-family: 'DM Sans', sans-serif;
     font-size: 11px;
     font-weight: 600;
     text-align: center;
@@ -238,9 +199,7 @@
 }
 
 .DirectMessagePage-availiblity-grid-row-label {
-    font-family: 'DM Sans', sans-serif;
     font-size: 10px;
-    text-align: right;
     padding: 0 6px;
     color: rgb(60, 60, 60);
     background-color: whitesmoke;
@@ -262,9 +221,25 @@
     cursor: pointer;
 }
 
-.cell:hover { background-color: #e8f5ee; }
-.DirectMessagePage-availiblity-cell:hover { filter: brightness(0.9); }
+.cell:hover {
+    background-color: #e8f5ee;
+}
 
-.cell-this    { background-color: #2e9e5e; }
-.cell-other   { background-color: #f9e08a; }
-.cell-overlap { background-color: #1a6b40; }
+.DirectMessagePage-availiblity-cell:hover {
+    filter: brightness(0.9); 
+}
+
+.DirectMessagePage-availiblity-this,
+.cell-this    {
+    background-color: #2e9e5e;
+}
+
+.DirectMessagePage-availiblity-other,
+.cell-other   {
+    background-color: #f9e08a;
+}
+
+.DirectMessagePage-availiblity-overlap,
+.cell-overlap {
+    background-color: #1a6b40;
+}
