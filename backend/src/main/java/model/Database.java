@@ -828,6 +828,31 @@ public class Database {
 		}
 	}
 
+	public static int createConversationForItem(int sellerId, int buyerId, int itemId) {
+		try(Connection con = getConnection()){
+			String convQuery = "INSERT INTO conversations (item_id) VALUES (?)";
+			PreparedStatement convStmt = con.prepareStatement(convQuery, Statement.RETURN_GENERATED_KEYS);
+			convStmt.setInt(1, itemId);
+			convStmt.executeUpdate();
+			ResultSet keys = convStmt.getGeneratedKeys();
+			if (!keys.next()) return -1;
+			int conversationId = keys.getInt(1);
+
+			String partQuery = "INSERT INTO conversation_participants (conversation_id, user_id) VALUES (?, ?)";
+			PreparedStatement partStmt = con.prepareStatement(partQuery);
+			partStmt.setInt(1, conversationId);
+			partStmt.setInt(2, sellerId);
+			partStmt.executeUpdate();
+			partStmt.setInt(2, buyerId);
+			partStmt.executeUpdate();
+
+			return conversationId;
+		}catch(SQLException e){
+			e.printStackTrace();
+			return -1;
+		}
+	}
+
 	public static void addParticipant(int conversationId, int userId){
 		try(Connection con = getConnection()){
 			String query = "INSERT INTO conversation_participants (conversation_id, user_id) " +
@@ -859,18 +884,20 @@ public class Database {
 	public static Conversation getConversation(int conversationId){
 		try(Connection con = getConnection()){
 			Conversation conversation = new Conversation(conversationId);
-			String query = "SELECT * FROM messages WHERE conversation_id = ? ORDER BY timestamp ASC, message_id ASC";
+			String query = "SELECT m.conversation_id, m.sender_id, u.username AS sender_username, m.content, m.timestamp " +
+				"FROM messages m JOIN users u ON m.sender_id = u.user_id " +
+				"WHERE m.conversation_id = ? ORDER BY m.timestamp ASC, m.message_id ASC";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, conversationId);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
 				int conversationIdResult = rs.getInt("conversation_id");
 				int senderId = rs.getInt("sender_id");
+				String senderUsername = rs.getString("sender_username");
 				String content = rs.getString("content");
 				LocalDateTime timestamp = rs.getTimestamp("timestamp").toLocalDateTime();
-				MessageDTO message = new MessageDTO(conversationIdResult, senderId, content, timestamp);
+				MessageDTO message = new MessageDTO(conversationIdResult, senderId, senderUsername, content, timestamp);
 				conversation.addMessage(message);
-
 			}
 			return conversation;
 		}catch(SQLException e){

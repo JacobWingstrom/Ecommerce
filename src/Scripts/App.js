@@ -23,8 +23,7 @@ function App() {
           <Route path="/AccountPage" element={<AccountPage />} />
           <Route path="/ListingPage/:item" element={<ListingPage />} />
           <Route path="/MessagesPage" element={<MessagesPage />} />
-          <Route path="/MessagesPage" element={<MessagesPage />} />
-          <Route path="/DirectMessagePage/:messageId" element={<DirectMessagePage />} />
+          <Route path="/DirectMessagePage/:conversationId" element={<DirectMessagePage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -13,35 +13,41 @@ function MessagesPageHeader() {
 }
 
 function MessagesPageBody() {
-    const [messages, setMessages] = useState([]);
+    const [conversations, setConversations] = useState([]);
     const { token } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('/api/messages/allMessages', {
-            method: 'POST',
+        fetch('/api/directMessage/conversations', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
-            .then(data => data.json())
-            .then(setMessages)
+            .then(res => res.json())
+            .then(setConversations)
             .catch(console.error);
     }, [token]);
 
     return (
         <div className="MessagesPage-content">
-            {messages.length === 0 && (
+            {conversations.length === 0 && (
                 <p className="MessagesPage-empty">No conversations yet</p>
             )}
-            {messages.map(message => (
-                <div
-                    key={message.conversationId}
-                    className="MessagesPage-message"
-                    onClick={() => navigate(`/DirectMessagePage/${message.conversationId}`)}
-                >
-                    <div className="MessagesPage-message-top">
-                        <span className="MessagesPage-user">{message.otherUsername}</span>
-                        <span className="MessagesPage-item">{message.itemName}</span>
+            {conversations.map(convo => (
+                <div key={convo.conversationId} className="MessagesPage-card">
+                    <div className="MessagesPage-card-info">
+                        <span className="MessagesPage-card-user">{convo.otherUsername}</span>
+                        {convo.itemTitle && (
+                            <span className="MessagesPage-card-item">{convo.itemTitle}</span>
+                        )}
+                        <span className="MessagesPage-card-preview">
+                            {convo.lastMessage ?? 'No messages yet'}
+                        </span>
                     </div>
+                    <button
+                        className="MessagesPage-card-btn"
+                        onClick={() => navigate(`/DirectMessagePage/${convo.conversationId}`)}
+                    >
+                        Open
+                    </button>
                 </div>
             ))}
         </div>
