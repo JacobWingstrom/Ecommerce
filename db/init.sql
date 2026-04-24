@@ -70,8 +70,9 @@ CREATE TABLE IF NOT EXISTS availability (
 );
 
 CREATE TABLE IF NOT EXISTS conversations (
-    conversation_id INT AUTO_INCREMENT PRIMARY KEY
-
+    conversation_id INT AUTO_INCREMENT PRIMARY KEY,
+    item_id INT,
+    FOREIGN KEY (item_id) REFERENCES items(item_id)
 );
 
 CREATE TABLE IF NOT EXISTS conversation_participants (
@@ -139,3 +140,24 @@ INSERT INTO users (user_id, username, password_hashed, salt, area, token) VALUES
 (18, 'user18', 'anDiHCF88LiPclGIlBawol0XbzgvEAQ2QidkHMPi6uc=', 'v8ea1TbB2sDFa1HgnnBqlQ==', 'AreaHere', 'token_18'),
 (19, 'user19', 'HF/KtJmNGTTT5IciNDWLpIrHz6LbWKngXHKhwlN0bug=', 'bTMqa2KzhpnS+esBO1hBWw==', 'AreaHere', 'token_19'),
 (20, 'user20', '0rZMmkRuwetRPl9GJAJJLxxSa2M1BOw9q3Uk3WMBvs8=', '5xPJ20eh7nxmAD4XdGIrqw==', 'AreaHere', 'token_20');
+
+-- =====================================================
+-- Test conversations
+-- Conversation 1: user01 <-> user02
+-- Conversation 2: user01 <-> user03
+-- =====================================================
+
+INSERT INTO conversations (conversation_id, item_id) VALUES
+(1, NULL),
+(2, NULL);
+
+INSERT INTO conversation_participants (conversation_id, user_id) VALUES
+(1, 1), (1, 2),
+(2, 1), (2, 3);
+
+INSERT INTO messages (conversation_id, sender_id, content, timestamp) VALUES
+(1, 1, 'Hey user02, interested in your listing!', '2026-04-20 10:00:00'),
+(1, 2, 'Hey! Which item were you looking at?', '2026-04-20 10:01:00'),
+(1, 1, 'The one you posted last week.', '2026-04-20 10:02:00'),
+(2, 1, 'Hi user03, is your item still available?', '2026-04-21 09:00:00'),
+(2, 3, 'Yes it is, feel free to bid!', '2026-04-21 09:05:00');

@@ -82,3 +82,22 @@
     border-color: black;
     color: white;
 }
+
+#ListingPage-Message-Button {
+    align-self: center;
+    width: 70%;
+    padding: 12px;
+    background-color: #2e9e5e;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid black;
+    border-radius: 3px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px black;
+}
+
+#ListingPage-Message-Button:hover {
+    background-color: #25834e;
+}

@@ -39,12 +39,12 @@ function DirectMessagePageHeader({ conversation }) {
     return (
         <div id="DirectMessagePage-Header">
             <h1>{conversation?.otherUsername ?? '...'}</h1>
-            <span>{conversation?.itemName ?? ''}</span>
+            <span>{conversation?.itemTitle ?? ''}</span>
         </div>
     );
 }
 
-function MessagesPanel({ conversation }) {
+function MessagesPanel() {
     const { conversationId } = useParams();
     const { token, user } = useAuth();
 
@@ -53,17 +53,12 @@ function MessagesPanel({ conversation }) {
     const messagesEndRef = useRef(null);
 
     const fetchMessages = useCallback(() => {
-        fetch('/api/messages/get', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ conversationId })
+        fetch(`/api/directMessage/messages/${conversationId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
         })
             .then(res => res.json())
             .then(data => {
-                setMessages(data);
+                setMessages(data.messages ?? []);
                 messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
             })
             .catch(console.error);
@@ -78,7 +73,7 @@ function MessagesPanel({ conversation }) {
     function sendMessage(e) {
         e.preventDefault();
         if (!input.trim()) return;
-        fetch('/api/messages/send', {
+        fetch('/api/directMessage/send', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -93,9 +88,9 @@ function MessagesPanel({ conversation }) {
     return (
         <div className="DirectMessagePage-messages">
             <div className="DirectMessagePage-messages-list">
-                {messages.map(m => (
+                {messages.map((m, i) => (
                     <div
-                        key={m.messageId}
+                        key={i}
                         className={`DirectMessagePage-messages-bubble ${m.senderUsername === user ? 'bubble-this' : 'bubble-other'}`}
                     >
                         <p>{m.content}</p>
@@ -220,7 +215,7 @@ function AvailabilityPanel({ conversation }) {
 function DirectMessagePageBody({ conversation }) {
     return (
         <div className="DirectMessagePage-Body">
-            <MessagesPanel conversation={conversation} />
+            <MessagesPanel />
             <AvailabilityPanel conversation={conversation} />
         </div>
     );
@@ -233,13 +228,8 @@ export default function DirectMessagePage() {
     const [conversation, setConversation] = useState(null);
 
     useEffect(() => {
-        fetch('/api/messages/conversations/get', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ conversationId })
+        fetch(`/api/directMessage/messages/${conversationId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
         })
             .then(data => data.json())
             .then(setConversation)

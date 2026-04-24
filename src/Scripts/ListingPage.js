@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header from "./Header"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import '../Sheets/ListingPage.css'
 import { useAuth } from '../Context/AuthContext.js'
 import { timeLeft } from './Listings.js'
@@ -51,7 +51,20 @@ function ListingPageForm({ currentBid, itemId }){
 
 function ListingPageBody(){
     const params = useParams();
+    const navigate = useNavigate();
+    const { token, user } = useAuth();
     const [ data, setData ] = useState(null);
+
+    function messageSeller() {
+        fetch('http://localhost:8080/api/directMessage/createForItem', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ itemId: parseInt(params.item), content: "Hi, I'm interested in your item!" })
+        })
+            .then(res => res.json())
+            .then(data => navigate(`/DirectMessagePage/${data.conversationId}`))
+            .catch(console.error);
+    }
 
     async function handleFetch(item) {
         const response = await fetch(`http://localhost:8080/api/buy/bids/itemById`, {
@@ -84,6 +97,9 @@ function ListingPageBody(){
                     <p id='ListingPage-Body-Time'>Ends In: {timeLeft(data.endTime)}</p>
                     <p id='ListingPage-Body-Price'>Current Highest Bid: ${data.highestBid}</p>
                     <ListingPageForm currentBid={ data.highestBid } itemId={ params.item } />
+                    {user !== data.username && (
+                        <button id="ListingPage-Message-Button" onClick={messageSeller}>Message Seller</button>
+                    )}
                 </div>)
             }
         </div>
