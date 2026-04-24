@@ -28,7 +28,7 @@ public class Database {
 	private static Queue<Connection> availableConnections = new LinkedList<Connection>();
 	private static Set<Connection> usedConnections = new HashSet<Connection>();
 	//URL of the Docker container running MySQL
-	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+	private static final String URL = "jdbc:mysql://127.0.0.1:3307/ecommerce?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&autoReconnect=true";
 	private static final String USER = "root";
 	private static final String PASSWORD = "RootPass123!";
 	private static final int pageSize = 20;
@@ -499,7 +499,6 @@ public class Database {
 			while(rs.next()){
 				Item item = buildItem(rs);
 				listing.addItem(item);
-				System.out.println("Row found: " + item.getUsername() + ' ' + item.getEndTime().toString());
 			}
 			return listing;
 
@@ -675,7 +674,7 @@ public class Database {
 			itemStmt.setBigDecimal(1, item.getHighestBid());
 			itemStmt.setInt(2, item.getHighestBidderId());
 			itemStmt.setInt(3, item.getItemId());
-			itemStmt.executeUpdate();
+			int rows = itemStmt.executeUpdate();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -729,12 +728,26 @@ public class Database {
 
 	public static void setExpiredItemsSold(){
 		try(Connection con = getConnection()) {
-			String query = "UPDATE items SET sold = TRUE WHERE end_time <= NOW() AND sold = FALSE";
-			PreparedStatement stmt = con.prepareStatement(query);
+			if (con == null) { return; }
+			String query = "SELECT item_id, seller_id, highest_bidder_id FROM items " +
+                    "WHERE end_time <= NOW() AND sold = FALSE AND highest_bidder_id IS NOT NULL";
+            PreparedStatement stmt = con.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            int count = 0;
+            while (rs.next()) {
+            	count++;
+            	int sellerId = rs.getInt("seller_id");
+            	int bidderId = rs.getInt("highest_bidder_id");
+            	int itemId = rs.getInt("item_id");
+                Database.createConversationForItem(sellerId, bidderId, itemId);
+            }
+
+			query = "UPDATE items SET sold = TRUE WHERE end_time <= NOW() AND sold = FALSE";
+			stmt = con.prepareStatement(query);
 			stmt.executeUpdate();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 	}
 
 	//Methods for availability: insertinb a block, getting blocks for a user, deleting a block, overlap query

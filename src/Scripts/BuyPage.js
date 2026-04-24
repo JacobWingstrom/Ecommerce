@@ -26,7 +26,7 @@ function Content({ location, search }) {
     const { token, user } = useAuth();
 
     async function handleFetch(token, user) {
-        const response = await fetch(`http://localhost:8080/api/buy/bids/active`, {
+        const response = await fetch(`/api/buy/bids/active`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

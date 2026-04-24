@@ -14,12 +14,10 @@ public abstract class UserService {
 		Account acct = Database.getUserByUsername(username);
 
 		if (type == ListType.CurrentBidItems) {
-			AuctionHandler.closeExpiredAuctions();
 			return Database.getUserItemsBidOn(acct.getUserID(), pageNum).getItemListings();
 		} else if (type == ListType.CurrentItemsOnMarket) {
 			return Database.getUserItemsOnMarket(acct.getUserID(), pageNum).getItemListings();
 		} else if (type == ListType.AllItemsWon) {
-			AuctionHandler.closeExpiredAuctions();
 			return Database.getUserItemsBought(acct.getUserID());
 		}
 		return null;

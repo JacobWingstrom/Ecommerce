@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dto.DirectMessageRequest;
-import service.AuctionHandler;
 import dto.DirectMessageResponse;
 import model.Account;
 import model.Database;
@@ -26,7 +25,7 @@ public class DirectMessageController {
 
 	@GetMapping("/testCloseAuctions")
 	public ResponseEntity<?> testCloseAuctions() {
-		AuctionHandler.closeExpiredAuctions();
+		Database.setExpiredItemsSold();
 		return ResponseEntity.ok("done");
 	}
 
