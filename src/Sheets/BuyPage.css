@@ -12,6 +12,9 @@
     width: 100%;
     padding-left: 25px;
     border-bottom: black 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
 
 .BuyPage-Buttons{

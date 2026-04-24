@@ -25,6 +25,7 @@ export default function Listings({ data }){
                     <img className="Listings-content-image" src={`data:image/jpeg;base64,${item.image}`} alt="Item"/>
                     <h4 className="Listings-content-title">{item.username}</h4>
                     <p className="Listings-content-price">Current Price: {item.highestBid}</p>
+                    <p className="Listings-content-location">{item.location}</p>
                     <p className="Listings-content-time">Time Left: {timeLeft(item.endTime)}</p>
                 </div>
             ))}
