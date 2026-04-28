@@ -1,20 +1,53 @@
-#MainPage{
-    display:inline-flex;
-    width: 100vw;
+#MainPage {
+    position: fixed;
+    top: 50px;
+    background-color: #f9a916;
+    width: 100%;
+    height: 100vh;
+}
+
+#MainBody {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: calc(100vh - 50px);
 }
 
-.MainBody-Body{
-    width: 50%;
-    height: calc(100vh - 50px);
-    border-radius: 0px;
-    border: 3px rgb(226, 249, 199) solid;
+#MainBody-card {
+    background-color: whitesmoke;
+    border: 3px solid black;
+    border-radius: 4px;
+    padding: 50px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    box-shadow: 6px 6px 0px black;
+    width: 350px;
+}
+
+#MainBody-card h2 {
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: rgb(46, 46, 46);
+}
+
+.MainBody-Body {
+    width: 100%;
+    padding: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid black;
+    border-radius: 3px;
     cursor: pointer;
-    background-color: rgb(249, 235, 162);
-    font-size: 50px;
-    font-weight: bold;
+    background-color: black;
+    color: white;
 }
 
-.MainBody-Body:hover{
-    background-color:  rgb(225, 212, 146);
+.MainBody-Body:hover {
+    background-color: #f97316;
+    border-color: black;
 }

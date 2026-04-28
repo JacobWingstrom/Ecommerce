@@ -19,7 +19,7 @@ public class AvailibiltyService {
 		for (int dayOfWeek = 0; dayOfWeek < avail.length; dayOfWeek++) {
 
 			LocalTime start = LocalTime.of(7, 0);
-			LocalTime end = LocalTime.of(19, 30);
+			LocalTime end = LocalTime.of(19, 0);
 
 			int slot = 0; // 0–23 for 7:00 -> 19:00
 
@@ -42,10 +42,11 @@ public class AvailibiltyService {
 		return Database.updateAvailablity(userId, ava);
 	}
 
-	public static Availability getAvailability(String token) throws SQLException {
-
-		int userId = Database.getUserByToken(token).getUserID();
-
-		return Database.getUserAvailability(userId);
+	public static Availability getAvailability(String userId) throws SQLException {
+		try {
+			return Database.getUserAvailability(Integer.parseInt(userId));
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 }

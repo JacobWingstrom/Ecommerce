@@ -2,8 +2,8 @@ package dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import model.Availability;
 import model.AvailabilityBlock;
@@ -28,32 +28,19 @@ public class AvailibiltyResponse {
 
 	private static boolean[][] createBinaryAvailability(Availability availability) {
 
-		// Group blocks by date
+		LocalDate today = LocalDate.now();
+		boolean[][] binary = new boolean[7][24];
+
 		Map<LocalDate, ArrayList<AvailabilityBlock>> blocksByDate = availability.getBlocksByDate();
 
-		// Determine how many days we need
-		int numDays = blocksByDate.size();
-		boolean[][] binary = new boolean[numDays][24]; // 24 half-hour slots
+		for (Map.Entry<LocalDate, ArrayList<AvailabilityBlock>> entry : blocksByDate.entrySet()) {
+			LocalDate date = entry.getKey();
+			int dayIndex = (int) ChronoUnit.DAYS.between(today, date);
+			if (dayIndex < 0 || dayIndex >= 7) continue;
 
-		// Sort dates so rows are in chronological order
-		ArrayList<LocalDate> dates = new ArrayList<>(blocksByDate.keySet());
-		Collections.sort(dates);
-
-		for (int dayIndex = 0; dayIndex < dates.size(); dayIndex++) {
-
-			LocalDate date = dates.get(dayIndex);
-			ArrayList<AvailabilityBlock> blocks = blocksByDate.get(date);
-
-			for (AvailabilityBlock block : blocks) {
-
-				LocalTime start = block.getStart();
-				LocalTime end = block.getEnd();
-
-				// Convert times to slot indices
-				int startSlot = timeToSlot(start);
-				int endSlot = timeToSlot(end);
-
-				// Mark all half-hour increments inside the block
+			for (AvailabilityBlock block : entry.getValue()) {
+				int startSlot = timeToSlot(block.getStart());
+				int endSlot = timeToSlot(block.getEnd());
 				for (int slot = startSlot; slot < endSlot; slot++) {
 					if (slot >= 0 && slot < 24) {
 						binary[dayIndex][slot] = true;

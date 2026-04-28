@@ -119,30 +119,41 @@ function AvailabilityPanel({ conversation }) {
     const [otherGrid, setotherGrid] = useState(emptyGrid());
 
     useEffect(() => {
-        if (!conversation) return;
+        if (!conversation?.userId || !conversation?.otherUserId) {
+            return;
+        }
 
-        fetch('/api/availability/get', {
+        fetch('/api/availibilty/getAvailibility', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ conversationId, userId: conversation.UserId })
-        }).then(res => res.json()).then(setGrid).catch(console.error);
+            body: JSON.stringify({ userId: String(conversation.userId) })
+        }).then(res => res.json()).then(data => {
+            const grid = emptyGrid();
+            (data.availability ?? []).forEach((row, d) => { if (d < DAYS) grid[d] = row.slice(0, SLOTS); });
+            setGrid(grid);
+        }).catch(console.error);
 
-        fetch('/api/availability/get', {
+        fetch('/api/availibilty/getAvailibility', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ conversationId, userId: conversation.otherUserId })
-        }).then(res => res.json()).then(setotherGrid).catch(console.error);
+            body: JSON.stringify({ userId: String(conversation.otherUserId) })
+        }).then(res => res.json()).then(data => {
+            const grid = emptyGrid();
+            (data.availability ?? []).forEach((row, d) => { if (d < DAYS) grid[d] = row.slice(0, SLOTS); });
+            setotherGrid(grid);
+        }).catch(console.error);
     }, [token, conversationId, conversation]);
 
     function handleCellClick(day, slot) {
         const next = Grid.map(r => [...r]);
         next[day][slot] = !next[day][slot];
         setGrid(next);
-        fetch('/api/availability/save', {
+        fetch('/api/availibilty/updateAvailibilty', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ conversationId, availability: next })
-        }).catch(console.error);
+            body: JSON.stringify({ token, availibilty: next })
+        }).then(res => { if (!res.ok) res.text().then(t => console.error('save failed', res.status, t)); })
+          .catch(console.error);
     }
 
     function cellClassName(day, slot) {
@@ -154,11 +165,12 @@ function AvailabilityPanel({ conversation }) {
         return 'cell';
     }
 
+    const startDate = new Date();
     const tableHeads = [];
     for (let d = 0; d < DAYS; d++) {
         tableHeads.push(
             <th key={d} className="DirectMessagePage-availiblity-grid-col-header">
-                {dateLabel(conversation?.auctionEndDate, d)}
+                {dateLabel(startDate, d)}
             </th>
         );
     }
@@ -193,21 +205,19 @@ function AvailabilityPanel({ conversation }) {
                 <span className="DirectMessagePage-availiblity-other">Their availability</span>
                 <span className="DirectMessagePage-availiblity-overlap">Both available</span>
             </div>
-            {conversation?.auctionEndDate && (
-                <div className="DirectMessagePage-availiblity-grid-wrapper">
-                    <table className="DirectMessagePage-availiblity-grid">
-                        <thead>
-                            <tr>
-                                <th className="DirectMessagePage-availiblity-grid-corner" />
-                                {tableHeads}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tableRows}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+            <div className="DirectMessagePage-availiblity-grid-wrapper">
+                <table className="DirectMessagePage-availiblity-grid">
+                    <thead>
+                        <tr>
+                            <th className="DirectMessagePage-availiblity-grid-corner" />
+                            {tableHeads}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tableRows}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

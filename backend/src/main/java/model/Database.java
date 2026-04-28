@@ -376,8 +376,12 @@ public class Database {
 		LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
 
 		String tag = rs.getString("tag");
+		String location = rs.getString("location");
 
-		return new Item(name, description, tag, itemId, currPrice, endTime, image, sold);
+		Item item = new Item(name, description, tag, itemId, currPrice, endTime, image, sold);
+		item.setLocation(location);
+		item.setSellerId(sellerId);
+		return item;
 	}
 	/**
 	 * Retrieves a List of Item objects representing the items sold by the user with the specified user ID.
@@ -552,10 +556,11 @@ public class Database {
 							"    end_time,\r\n" + //
 							"    approved_flag,\r\n" + //
 							"    tag,\r\n" + //
+							"    location,\r\n" + //
 							"    sold,\r\n" + //
 							"    `image`\r\n" + //
 							")\r\n" + //
-							"VALUES (?, ?, ?, ?, NULL, ?, FALSE, ?, FALSE, ?);";
+							"VALUES (?, ?, ?, ?, NULL, ?, FALSE, ?, ?, FALSE, ?);";
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, sellerId);
 			stmt.setString(2, item.getUsername());
@@ -563,7 +568,8 @@ public class Database {
 			stmt.setBigDecimal(4, item.getHighestBid());
 			stmt.setTimestamp(5, Timestamp.valueOf(item.getEndTime()));
 			stmt.setString(6, item.getTag());
-			stmt.setBytes(7, item.getImage());
+			stmt.setString(7, item.getLocation());
+			stmt.setBytes(8, item.getImage());
 			stmt.executeUpdate();
 			stmt.close();
 			
@@ -753,7 +759,7 @@ public class Database {
 	//Methods for availability: insertinb a block, getting blocks for a user, deleting a block, overlap query
 	public static boolean updateAvailablity(int userId, Availability blocks){
 		try(Connection con  = getConnection()){
-			String deleteStatement = "DELETE FROM availablity WHERE user_id = ?";
+			String deleteStatement = "DELETE FROM availability WHERE user_id = ?";
 			PreparedStatement deleteStmt = con.prepareStatement(deleteStatement);
 			deleteStmt.setInt(1, userId);
 			deleteStmt.executeUpdate();
@@ -785,12 +791,12 @@ public class Database {
 				AvailabilityBlock block = new AvailabilityBlock(
 					rs.getTime("start_time").toLocalTime(),
 					rs.getTime("end_time").toLocalTime(),
-					rs.getDate("date").toLocalDate(),
-					rs.getInt("block_id"),
-					rs.getInt("user_id")
+					rs.getDate("date").toLocalDate()
 				);
+				System.out.println("getUserAvailability: block date=" + block.getDate() + " start=" + block.getStart() + " end=" + block.getEnd());
 				availability.addBlock(block);
 			}
+			System.out.println("getUserAvailability: userId=" + userId + " total blocks=" + availability.getBlocks().size());
 			return availability;
 		}catch(SQLException e){
 			e.printStackTrace();

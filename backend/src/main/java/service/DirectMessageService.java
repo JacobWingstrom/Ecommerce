@@ -78,7 +78,7 @@ public class DirectMessageService {
 				return new DirectMessageResponse(false, "User is not a participant in this conversation");
 			}
 
-			String otherUserQuery = "SELECT u.username, i.name AS item_title " +
+			String otherUserQuery = "SELECT cp.user_id, u.username, i.name AS item_title " +
 					"FROM conversation_participants cp " +
 					"JOIN users u ON cp.user_id = u.user_id " +
 					"LEFT JOIN conversations c ON cp.conversation_id = c.conversation_id " +
@@ -91,7 +91,9 @@ public class DirectMessageService {
 
 			String otherUsername = "Unknown";
 			String itemTitle = null;
+			int otherUserId = -1;
 			if (otherRs.next()) {
+				otherUserId = otherRs.getInt("user_id");
 				otherUsername = otherRs.getString("username");
 				itemTitle = otherRs.getString("item_title");
 			}
@@ -106,7 +108,10 @@ public class DirectMessageService {
 			for (MessageDTO msg : conversation.getMessages())
 				messages.add(msg);
 
-			return new DirectMessageResponse(conversationId, otherUsername, itemTitle, messages);
+			DirectMessageResponse response = new DirectMessageResponse(conversationId, otherUsername, itemTitle, messages);
+			response.setUserId(userId);
+			response.setOtherUserId(otherUserId);
+			return response;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new DirectMessageResponse(false, "Error retrieving conversation");

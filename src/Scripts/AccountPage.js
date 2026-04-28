@@ -53,10 +53,19 @@ function Content({ currentPage }) {
             .catch(err => console.log(err))
     }, [currentPage, token, user]);
 
+    const emptyMessage = {
+        'Selling/Current': 'You have no items for sale',
+        'Bids/Won': 'You have not won any auctions',
+        'Bids/Current': 'You are not currently bidding on any items',
+    }[currentPage];
+
     return (
         <div className="AccountPage-Content">
             <div className="AccountPage-ContentPage">
-                {currentPage && <Listings data={ data }/>}
+                {currentPage && data?.length > 0
+                    ? <Listings data={data} />
+                    : data !== null && <p>{emptyMessage}</p>
+                }
             </div>
         </div>
     )

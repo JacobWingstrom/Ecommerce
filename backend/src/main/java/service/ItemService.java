@@ -12,7 +12,7 @@ import model.Item;
 public class ItemService {
 
 	public static boolean AddListing(String title, String description, String minimumPrice, String endDate,
-			MultipartFile image, String token) throws SQLException {
+			MultipartFile image, String token, String location) throws SQLException {
 		Account acct = Database.getUserByToken(token);
 
 		if (acct == null)
@@ -22,7 +22,7 @@ public class ItemService {
 
 		try {
 			item = new Item(title,
-				description, null, 
+				description, null,
 				new BigDecimal(minimumPrice),
 				LocalDate.parse(endDate).atStartOfDay(),
 				image.getBytes()
@@ -31,6 +31,7 @@ public class ItemService {
 			return false;
 		}
 
+		item.setLocation(location);
 		Database.addItem(item, acct.getUserID());
 		return true;
 	}

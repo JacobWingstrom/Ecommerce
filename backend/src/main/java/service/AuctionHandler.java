@@ -13,7 +13,7 @@ import model.Database;
 @Component
 public class AuctionHandler {
 
-    @Scheduled(cron = "0 0 0 * * *", zone = "UTC")
+    @Scheduled(cron = "0 0 0 * * *", zone = "MST")
     public void closeExpiredAuctions() {
         Database.setExpiredItemsSold();
     }

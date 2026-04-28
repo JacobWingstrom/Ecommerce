@@ -37,7 +37,7 @@ function SignInForm() {
       const data = await signInUser({ username, password });
       console.log(data.username)
       console.log(data.token)
-      login(data.username, data.token);
+      login(data.username, data.token, data.userId);
       navigate('/MainPage');
     } catch {
       setError('Invalid login credentials. Please try again.');

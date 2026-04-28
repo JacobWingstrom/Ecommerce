@@ -21,13 +21,9 @@ public class AvailabilityController {
 
 		boolean updateSuccessful = AvailibiltyService.updateAvailibilty(request.getToken(), request.getAvailibilty());
 
-		Availability availability = AvailibiltyService.getAvailability(request.getToken());
-
 		if (updateSuccessful) {
-			System.out.println("200");
-			return ResponseEntity.ok(new AvailibiltyResponse(request.getToken(), availability));
+			return ResponseEntity.ok().build();
 		} else {
-			System.out.println("500");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid User Availibilty Request");
 		}
 	}
@@ -35,14 +31,12 @@ public class AvailabilityController {
 	@PostMapping("/getAvailibility")
 	public ResponseEntity<?> getAvailability(@RequestBody AvailibiltyRequest request) throws SQLException {
 
-		Availability availability = AvailibiltyService.getAvailability(request.getToken());
+		Availability availability = AvailibiltyService.getAvailability(request.getUserId());
 
 		if (availability == null) {
-			System.out.println("500");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid User Availibilty Request");
 		} else {
-			System.out.println("200");
-			return ResponseEntity.ok(new AvailibiltyResponse(request.getToken(), availability));
+			return ResponseEntity.ok(new AvailibiltyResponse(request.getUserId(), availability));
 		}
 	}
 

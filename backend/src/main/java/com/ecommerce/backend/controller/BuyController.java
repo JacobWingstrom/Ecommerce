@@ -75,6 +75,14 @@ public class BuyController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found");
 			}
 
+			if (item.getSellerId() == account.getUserID()) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You cannot bid on your own listing");
+			}
+
+			if (item.getHighestBidderId() == account.getUserID()) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are already the highest bidder");
+			}
+
 			Bid bid = new Bid(account.getUserID(), itemId, bidAmount, LocalDateTime.now());
 
 			Item updatedItem = BuyService.setBid(bid);

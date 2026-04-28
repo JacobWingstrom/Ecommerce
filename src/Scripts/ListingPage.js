@@ -52,7 +52,7 @@ function ListingPageForm({ currentBid, itemId }){
 function ListingPageBody(){
     const params = useParams();
     const navigate = useNavigate();
-    const { token, user } = useAuth();
+    const { token, user, userId } = useAuth();
     const [ data, setData ] = useState(null);
 
     function messageSeller() {
@@ -96,10 +96,15 @@ function ListingPageBody(){
                     <p id='ListingPage-Body-Description'>Description: {data.description}</p>
                     <p id='ListingPage-Body-Time'>Ends In: {timeLeft(data.endTime)}</p>
                     <p id='ListingPage-Body-Price'>Current Highest Bid: ${data.highestBid}</p>
-                    <ListingPageForm currentBid={ data.highestBid } itemId={ params.item } />
-                    {user !== data.username && (
+                    {userId === data.sellerId
+                        ? <p>You cannot bid on your own listing.</p>
+                        : userId === data.highestBidderId
+                        ? <p>You are already the highest bidder.</p>
+                        : <ListingPageForm currentBid={ data.highestBid } itemId={ params.item } />
+                    }
+                    {/* {user !== data.username && (
                         <button id="ListingPage-Message-Button" onClick={messageSeller}>Message Seller</button>
-                    )}
+                    )} */}
                 </div>)
             }
         </div>

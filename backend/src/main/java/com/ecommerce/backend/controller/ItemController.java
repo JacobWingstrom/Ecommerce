@@ -22,8 +22,9 @@ public class ItemController {
 	public ResponseEntity<?> createListing(@RequestPart("image") MultipartFile image,
 			@RequestPart("title") String title, @RequestPart("minimumPrice") String price,
 			@RequestPart("description") String description, @RequestPart("endDate") String endDate,
+			@RequestPart("location") String location,
 			@RequestHeader("Authorization") String authHeader) throws SQLException {
-		if (ItemService.AddListing(title, description, price, endDate, image, authHeader.substring(7))) {
+		if (ItemService.AddListing(title, description, price, endDate, image, authHeader.substring(7), location)) {
 			System.out.println("add listing 200");
 			return ResponseEntity.ok(new NewListingResponse(true));
 		} else {

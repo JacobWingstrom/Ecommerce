@@ -12,8 +12,10 @@ public class Item {
 	private String username;
 	private String description;
 	private String tag;
+	private String location;
 	private BigDecimal highestBid;
 	private int highestBidderId;
+	private int sellerId;
 	private int itemId;
 	private LocalDateTime end_time;
 	private byte[] image;
@@ -62,8 +64,10 @@ public class Item {
 		this.description = item.description;
 		this.itemId = item.itemId;
 		this.tag = item.tag;
+		this.location = item.location;
 		this.highestBid = item.highestBid;
 		this.highestBidderId = item.highestBidderId;
+		this.sellerId = item.sellerId;
 		this.image = item.image;
 		this.end_time = item.end_time;
 	}
@@ -102,6 +106,22 @@ public class Item {
 	// NEED TO UPDATE IN DB
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public int getSellerId() {
+		return sellerId;
+	}
+
+	public void setSellerId(int sellerId) {
+		this.sellerId = sellerId;
 	}
 
 	public BigDecimal getHighestBid() {

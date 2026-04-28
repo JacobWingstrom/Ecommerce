@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS items (
     end_time DATETIME,
     approved_flag BOOLEAN DEFAULT FALSE,
     tag VARCHAR(50),
+    location VARCHAR(100),
     sold BOOLEAN NOT NULL DEFAULT FALSE,
     image MEDIUMBLOB,
     FOREIGN KEY (seller_id) REFERENCES users(user_id),

@@ -8,6 +8,8 @@ public class DirectMessageResponse {
 
 	private int conversationId;
 	private String otherUsername;
+	private int userId;
+	private int otherUserId;
 	private int itemId;
 	private String itemTitle;
 	private List<MessageDTO> messages;
@@ -50,6 +52,22 @@ public class DirectMessageResponse {
 
 	public void setConversationId(int conversationId) {
 		this.conversationId = conversationId;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public int getOtherUserId() {
+		return otherUserId;
+	}
+
+	public void setOtherUserId(int otherUserId) {
+		this.otherUserId = otherUserId;
 	}
 
 	public String getOtherUsername() {
